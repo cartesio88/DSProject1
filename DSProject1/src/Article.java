@@ -15,6 +15,7 @@ public class Article {
 	public Article(String rawArticle) {
 		raw = rawArticle;
 
+		/* Split the fields (and checks the format! */
 		getFields(rawArticle);
 
 		/* Is the type valid? */
