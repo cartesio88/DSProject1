@@ -5,7 +5,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-public class ServerPing implements Runnable, Constants {
+public class ServerPing extends Thread implements Constants {
 	boolean done = false;
 
 	@Override
@@ -16,9 +16,6 @@ public class ServerPing implements Runnable, Constants {
 			// Opening the socket
 			DatagramSocket registryServerSocket = new DatagramSocket(serverPort);
 
-			// Register in the registry server
-			//InetAddress serverIp = InetAddress.getLocalHost();
-			
 			String registryMsg = "Register;RMI;" + serverIp + ";" + serverPort;
 			
 			System.out.println("Registering with the string: "+registryMsg);

@@ -1,4 +1,3 @@
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -11,30 +10,21 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 
 	public static void main(String[] args) {
 		System.out.println("Starting the Server");
-		//ServerPing serverPing = new ServerPing();
-
+		
 		// Init server ping
-		// serverPing.run();
+		ServerPing serverPing = new ServerPing();
+		serverPing.start();
 
 		try {
-
-						
+			
 			Server server = new Server();
-
-			// Binding the object
-			// InetAddress serverIp = InetAddress.getLocalHost();
-
 			Registry registry = LocateRegistry.getRegistry();
-
 			registry.rebind(serverName, server);
 
 		} catch (RemoteException e) {
 			System.out.println("ERROR creating the Server");
 			System.out.println(e);
-		} // catch (MalformedURLException e) {
-			// System.out.println("ERROR rebinding the server");
-		// }
-
+		} 
 	}
 
 	protected Server() throws RemoteException {
