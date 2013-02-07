@@ -17,8 +17,12 @@ public class ServerPing implements Runnable, Constants {
 			DatagramSocket registryServerSocket = new DatagramSocket(serverPort);
 
 			// Register in the registry server
+			//InetAddress serverIp = InetAddress.getLocalHost();
+			
 			String registryMsg = "Register;RMI;" + serverIp + ";" + serverPort;
-
+			
+			System.out.println("Registering with the string: "+registryMsg);
+			
 			InetAddress registryServerIp;
 
 			registryServerIp = InetAddress.getByName(registryServerName);
@@ -55,8 +59,7 @@ public class ServerPing implements Runnable, Constants {
 		} catch (UnknownHostException e) {
 			System.out.println("ERROR unknown host: " + registryServerName);
 		} catch (SocketException e) {
-			System.out
-					.println("ERROR opening the socket with the Registry Server");
+			System.out.println("ERROR opening the socket with the Registry Server");
 			return;
 		} catch (IOException e) {
 			System.out.println("ERROR sending UDP package");

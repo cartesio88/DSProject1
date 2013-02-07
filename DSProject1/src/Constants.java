@@ -1,3 +1,5 @@
+import java.net.InetAddress;
+
 
 public interface Constants {
 	// Registry-server constants
@@ -6,7 +8,7 @@ public interface Constants {
 	
 	// Server constants
 	final int MAXCLIENTS = 5;
-	final int serverPort = 3333;
+	final int serverPort = 5105;
 	final String serverIp = "134.84.74.49";
-	final String serverName = "RomanCesarServer";
+	final String serverName = "rmi://"+serverIp+"/RomanCesarServer";
 }
