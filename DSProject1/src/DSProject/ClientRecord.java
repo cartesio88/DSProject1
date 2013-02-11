@@ -1,3 +1,4 @@
+package DSProject;
 
 public class ClientRecord {
 	private String ip;
@@ -13,4 +14,12 @@ public class ClientRecord {
 	
 	public void setIP(String ip){this.ip = ip;}
 	public void setPort(int port){this.port = port;}
+	
+	public String toString(){
+		String string="";
+		
+		string+=ip+":"+port;
+		
+		return string;
+	}
 }

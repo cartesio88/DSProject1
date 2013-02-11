@@ -1,3 +1,4 @@
+package DSProject;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -65,6 +66,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 		
 		/* Send them via UDP */
 		/* TODO */
+		
 		
 		return false;
 	}

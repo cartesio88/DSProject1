@@ -1,5 +1,8 @@
+package TestSuite;
+import DSProject.Article;
 
-public class Tests {
+
+public class TestsArticle {
 
 	public static void main(String[] args){
 		/* Test cases - Articles */

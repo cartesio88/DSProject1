@@ -1,3 +1,4 @@
+package DSProject;
 /* Encapsulates an article/subscription */
 public class Article {
 	final private int MAXSTRING = 120;

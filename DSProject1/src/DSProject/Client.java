@@ -1,3 +1,4 @@
+package DSProject;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -19,7 +20,8 @@ public class Client implements Constants {
 			System.out.println("Error locating the server");
 			System.out.println(e);
 		}
-
 	}
+	
+	
 
 }
