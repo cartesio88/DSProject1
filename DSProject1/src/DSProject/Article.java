@@ -1,4 +1,5 @@
 package DSProject;
+
 /* Encapsulates an article/subscription */
 public class Article {
 	final private int MAXSTRING = 120;
@@ -13,7 +14,6 @@ public class Article {
 	private boolean legalArticle = true;
 	private String raw;
 
-	
 	public Article(String rawArticle) {
 		raw = rawArticle;
 
@@ -29,9 +29,31 @@ public class Article {
 		 */
 		if (legalArticle)
 			classifyArticle();
-		
+
 		/* if some fields are empty, write "all" on them */
 		normalizeArticle();
+	}
+	
+	public Article(String type, String originator, String org, String contents) {
+		this.type = type;
+		this.originator = originator;
+		this.org = org;
+		this.contents = contents;
+		
+		raw = encode();
+
+		legalArticle = true;
+		
+		/* Is the type valid? */
+		if (legalArticle)
+			checkType();
+
+		/*
+		 * Is it an article? a subscription? is it legal at all?
+		 */
+		if (legalArticle)
+			classifyArticle();
+		
 	}
 
 	private void getFields(String rawArticle) {
@@ -92,12 +114,15 @@ public class Article {
 		if (!validArticle && !validSubscription)
 			legalArticle = false;
 	}
-	
-	private void normalizeArticle(){
-		if(type.equals("")) type="all";
-		if(originator.equals("")) originator="all";
-		if(org.equals("")) org="all";
-		
+
+	private void normalizeArticle() {
+		if (type.equals(""))
+			type = "all";
+		if (originator.equals(""))
+			originator = "all";
+		if (org.equals(""))
+			org = "all";
+
 	}
 
 	private void checkType() {
@@ -119,14 +144,32 @@ public class Article {
 		return validArticle;
 	}
 
-	public String getType(){ return type; }
-	public String getOriginator(){ return originator; }
-	public String getOrg(){ return org; }
-	public String getContents(){ return contents; }
-	
-	
+	public String getType() {
+		return type;
+	}
+
+	public String getOriginator() {
+		return originator;
+	}
+
+	public String getOrg() {
+		return org;
+	}
+
+	public String getContents() {
+		return contents;
+	}
+
 	public boolean isValidSubscription() {
 		return validSubscription;
+	}
+
+	public String encode() {
+		String string = "";
+
+		string += type+";"+originator+";"+org+";"+contents;
+		
+		return string;
 	}
 
 	public String toString() {

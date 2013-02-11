@@ -15,6 +15,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	public static void main(String[] args) {
 		System.out.println("Starting the Server");
 		
+		subscriptionRegister = new SubscriptionsRegister();
+		clientsRegister = new LinkedList<ClientRecord>();
+		
 		// Init server ping
 		ServerPing serverPing = new ServerPing();
 		//serverPing.start();
@@ -36,20 +39,20 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	}
 
 	@Override
-	public boolean JoinServer() throws RemoteException {
+	public synchronized boolean JoinServer() throws RemoteException {
 		System.out.println("Joining Server");
 		return false;
 	}
 
 	@Override
-	public boolean Join(String IP, int Port) throws RemoteException {
+	public synchronized boolean Join(String IP, int Port) throws RemoteException {
 		System.out.println("Client join ip: " + IP + ", Port: " + Port);
 		clientsRegister.add(new ClientRecord(IP, Port));
 		return true;
 	}
 
 	@Override
-	public boolean Subscribe(String IP, int Port, String Article)
+	public synchronized boolean Subscribe(String IP, int Port, String Article)
 			throws RemoteException {
 		System.out.println("Client subscribe ip: " + IP + ", Port: " + Port
 				+ ", article: " + Article);
@@ -59,11 +62,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	}
 
 	@Override
-	public boolean Publish(String Article) throws RemoteException {
+	public synchronized boolean Publish(String Article) throws RemoteException {
 		System.out.println("Client publish: " + Article);
 		
 		LinkedList<ClientRecord> clients = subscriptionRegister.getClients(new Article(Article));
 		
+		System.out.println("Sending to clients:");
+		System.out.println(clients);
 		/* Send them via UDP */
 		/* TODO */
 		
@@ -72,7 +77,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	}
 
 	@Override
-	public boolean Unsubscribe(String IP, int Port, String Article)
+	public synchronized boolean Unsubscribe(String IP, int Port, String Article)
 			throws RemoteException {
 		System.out.println("Client unsubscribe ip: " + IP + ", Port: " + Port
 				+ ", article: " + Article);
