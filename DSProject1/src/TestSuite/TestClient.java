@@ -6,7 +6,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import DSProject.Article;
-import DSProject.ClientRecord;
+import DSProject.HostRecord;
 import DSProject.Constants;
 
 import DSProject.ServerInterface;
@@ -23,10 +23,10 @@ public class TestClient implements Constants{
 			
 			/* Diferent tests */
 			/* Instantiate clients */
-			ClientRecord c1 = new ClientRecord("192.168.1.1",1234);
-			ClientRecord c2 = new ClientRecord("192.168.1.2",1235);
-			ClientRecord c3 = new ClientRecord("192.168.1.3",1236);
-			ClientRecord c4 = new ClientRecord("192.168.1.4",1237);
+			HostRecord c1 = new HostRecord("192.168.1.1",1234);
+			HostRecord c2 = new HostRecord("192.168.1.2",1235);
+			HostRecord c3 = new HostRecord("192.168.1.3",1236);
+			HostRecord c4 = new HostRecord("192.168.1.4",1237);
 			
 			
 			/* Instantiate articles */

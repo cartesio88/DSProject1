@@ -14,7 +14,7 @@ public class SubscriptionsRegister {
 		initStructure();
 	}
 
-	public void subscribeClient(Article subscription, ClientRecord client) {
+	public void subscribeClient(Article subscription, HostRecord client) {
 		//System.out.println("Subscribing client " + client);
 
 		/* Look for type */
@@ -46,7 +46,7 @@ public class SubscriptionsRegister {
 		}
 
 		/* Look for Org */
-		LinkedList<ClientRecord> clientsRegister = (LinkedList<ClientRecord>) orgRegister
+		LinkedList<HostRecord> clientsRegister = (LinkedList<HostRecord>) orgRegister
 				.get(subscription.getOrg());
 		if (clientsRegister == null) { /*
 										 * Originator does not exist, create the
@@ -68,7 +68,7 @@ public class SubscriptionsRegister {
 		}
 	}
 
-	public void unsubscribeClient(Article subscription, ClientRecord client) {
+	public void unsubscribeClient(Article subscription, HostRecord client) {
 		/* Look for type */
 		HashMap originatorRegister = (HashMap) register.get(subscription
 				.getType());
@@ -86,7 +86,7 @@ public class SubscriptionsRegister {
 
 		/* Look for Org */
 		@SuppressWarnings("unchecked")
-		LinkedList<ClientRecord> clientsRegister = (LinkedList<ClientRecord>) orgRegister
+		LinkedList<HostRecord> clientsRegister = (LinkedList<HostRecord>) orgRegister
 				.get(subscription.getOrg());
 		if (clientsRegister == null) {
 			System.out.println("ERROR Unsubscribing client 2!: " + client);
@@ -98,8 +98,8 @@ public class SubscriptionsRegister {
 		}
 	}
 
-	public LinkedList<ClientRecord> getClients(Article article) {
-		LinkedList<ClientRecord> clients = new LinkedList<ClientRecord>();
+	public LinkedList<HostRecord> getClients(Article article) {
+		LinkedList<HostRecord> clients = new LinkedList<HostRecord>();
 
 		/*
 		 * The article is always sent to those clients who are subscribed to
@@ -118,9 +118,9 @@ public class SubscriptionsRegister {
 		return clients;
 	}
 
-	private LinkedList<ClientRecord> getClientsFromType(
+	private LinkedList<HostRecord> getClientsFromType(
 			HashMap originatorRegister, Article article) {
-		LinkedList<ClientRecord> clients = new LinkedList<ClientRecord>();
+		LinkedList<HostRecord> clients = new LinkedList<HostRecord>();
 
 		if (originatorRegister == null)
 			return clients;
@@ -143,9 +143,9 @@ public class SubscriptionsRegister {
 		return clients;
 	}
 
-	private LinkedList<ClientRecord> getClientsFromOriginator(
+	private LinkedList<HostRecord> getClientsFromOriginator(
 			HashMap orgRegister, Article article) {
-		LinkedList<ClientRecord> clients = new LinkedList<ClientRecord>();
+		LinkedList<HostRecord> clients = new LinkedList<HostRecord>();
 
 		if (orgRegister == null)
 			return clients;
@@ -154,14 +154,14 @@ public class SubscriptionsRegister {
 		 * The article is always sent to those clients who are subscribed to
 		 * everything
 		 */
-		LinkedList<ClientRecord> orgClients = (LinkedList<ClientRecord>) orgRegister
+		LinkedList<HostRecord> orgClients = (LinkedList<HostRecord>) orgRegister
 				.get("all");
 		if (orgRegister != null) {
 			clients.addAll(orgClients);
 		}
 
 		if (!article.getOrg().equals("all")) {
-			orgClients = (LinkedList<ClientRecord>) orgRegister.get(article
+			orgClients = (LinkedList<HostRecord>) orgRegister.get(article
 					.getOrg());
 			if (orgClients != null) {
 				clients.addAll(orgClients);

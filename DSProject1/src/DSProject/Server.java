@@ -10,17 +10,19 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 
 	private static final long serialVersionUID = 1L;
 	private static SubscriptionsRegister subscriptionRegister;
-	private static LinkedList<ClientRecord> clientsRegister;
+	private static LinkedList<HostRecord> clientsRegister;
+	private static LinkedList<HostRecord> serversRegister;
 
 	public static void main(String[] args) {
 		System.out.println("Starting the Server");
 		
 		subscriptionRegister = new SubscriptionsRegister();
-		clientsRegister = new LinkedList<ClientRecord>();
+		clientsRegister = new LinkedList<HostRecord>();
+		serversRegister = new LinkedList<HostRecord>();
 		
 		// Init server ping
 		ServerPing serverPing = new ServerPing();
-		//serverPing.start();
+		serverPing.start();
 
 		try {
 			
@@ -47,7 +49,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	@Override
 	public synchronized boolean Join(String IP, int Port) throws RemoteException {
 		System.out.println("Client join ip: " + IP + ", Port: " + Port);
-		clientsRegister.add(new ClientRecord(IP, Port));
+		clientsRegister.add(new HostRecord(IP, Port));
 		return true;
 	}
 
@@ -57,7 +59,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 		System.out.println("Client subscribe ip: " + IP + ", Port: " + Port
 				+ ", article: " + Article);
 		
-		subscriptionRegister.subscribeClient(new Article(Article), new ClientRecord(IP, Port));
+		subscriptionRegister.subscribeClient(new Article(Article), new HostRecord(IP, Port));
 		return true;
 	}
 
@@ -65,7 +67,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	public synchronized boolean Publish(String Article) throws RemoteException {
 		System.out.println("Client publish: " + Article);
 		
-		LinkedList<ClientRecord> clients = subscriptionRegister.getClients(new Article(Article));
+		LinkedList<HostRecord> clients = subscriptionRegister.getClients(new Article(Article));
 		
 		System.out.println("Sending to clients:");
 		System.out.println(clients);
@@ -82,7 +84,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 		System.out.println("Client unsubscribe ip: " + IP + ", Port: " + Port
 				+ ", article: " + Article);
 		
-		subscriptionRegister.unsubscribeClient(new Article(Article), new ClientRecord(IP, Port));
+		subscriptionRegister.unsubscribeClient(new Article(Article), new HostRecord(IP, Port));
 		
 		return true;
 	}

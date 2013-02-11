@@ -1,10 +1,10 @@
 package DSProject;
 
-public class ClientRecord {
+public class HostRecord {
 	private String ip;
 	private int port;
 	
-	public ClientRecord(String ip, int port){
+	public HostRecord(String ip, int port){
 		this.ip = ip;
 		this.port = port;
 	}
