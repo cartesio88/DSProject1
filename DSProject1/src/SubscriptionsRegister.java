@@ -12,7 +12,7 @@ public class SubscriptionsRegister {
 		initStructure();
 	}
 
-	public void subscribeClient(Article subscription, String client) {
+	public void subscribeClient(Article subscription, ClientRecord client) {
 		/* Look for type */
 		HashMap originatorRegister = (HashMap) register.get(subscription
 				.getType());
@@ -33,7 +33,7 @@ public class SubscriptionsRegister {
 		}
 
 		/* Look for Org */
-		LinkedList<String> clientsRegister = (LinkedList<String>) orgRegister.get(subscription.getOrg());
+		LinkedList<ClientRecord> clientsRegister = (LinkedList<ClientRecord>) orgRegister.get(subscription.getOrg());
 		if (clientsRegister == null) { /*
 										 * Originator does not exist, create the
 										 * entry
@@ -49,8 +49,37 @@ public class SubscriptionsRegister {
 		}
 	}
 
-	public LinkedList<String> getClients(Article article) {
-		LinkedList<String> clients = new LinkedList<String>();
+	public void unsubscribeClient(Article subscription, ClientRecord client) {
+		/* Look for type */
+		HashMap originatorRegister = (HashMap) register.get(subscription
+				.getType());
+		if (originatorRegister == null) { /* Specified type does not exist */
+			System.out.println("ERROR Unubscribing the client: " + client
+					+ ". Invalid subscription type.");
+		}
+
+		/* Look for originator */
+		HashMap orgRegister = (HashMap) originatorRegister.get(subscription
+				.getOriginator());
+		if (orgRegister == null) { 
+			System.out.println("ERROR Unsubscribing client 1!: "+client);
+		}
+
+		/* Look for Org */
+		@SuppressWarnings("unchecked")
+		LinkedList<ClientRecord> clientsRegister = (LinkedList<ClientRecord>) orgRegister.get(subscription.getOrg());
+		if (clientsRegister == null) { 
+			System.out.println("ERROR Unsubscribing client 2!: "+client);
+		}
+
+		/* Store client */
+		if (!clientsRegister.remove(client)) {
+			System.out.println("ERROR Unsubscribing client 3!: "+client);
+		}
+	}
+	
+	public LinkedList<ClientRecord> getClients(Article article) {
+		LinkedList<ClientRecord> clients = new LinkedList<ClientRecord>();
 
 		/* The article is always sent to those clients who are subscribed to everything */
 		HashMap originatorRegister = (HashMap) register.get("all");
@@ -66,8 +95,8 @@ public class SubscriptionsRegister {
 		return clients;
 	}
 
-	private LinkedList<String> getClientsFromType(HashMap originatorRegister, Article article) {
-		LinkedList<String> clients = new LinkedList<String>();
+	private LinkedList<ClientRecord> getClientsFromType(HashMap originatorRegister, Article article) {
+		LinkedList<ClientRecord> clients = new LinkedList<ClientRecord>();
 
 		/* The article is always sent to those clients who are subscribed to everything */
 		HashMap orgRegister = (HashMap) originatorRegister.get("all");
@@ -83,18 +112,18 @@ public class SubscriptionsRegister {
 		return clients;
 	}
 
-	private LinkedList<String> getClientsFromOriginator(HashMap orgRegister, Article article) {
-		LinkedList<String> clients = new LinkedList<String>();
+	private LinkedList<ClientRecord> getClientsFromOriginator(HashMap orgRegister, Article article) {
+		LinkedList<ClientRecord> clients = new LinkedList<ClientRecord>();
 
 		/* The article is always sent to those clients who are subscribed to everything */
-		LinkedList<String>  orgClients = (LinkedList<String>) orgRegister.get("all");
+		LinkedList<ClientRecord>  orgClients = (LinkedList<ClientRecord>) orgRegister.get("all");
 		if(orgRegister != null){
 			clients.addAll(orgClients);
 		}
 		
 		
 		if(!article.getOrg().equals("all")){
-			orgClients = (LinkedList<String>) orgRegister.get(article.getOrg());
+			orgClients = (LinkedList<ClientRecord>) orgRegister.get(article.getOrg());
 			clients.addAll(orgClients);
 		}
 

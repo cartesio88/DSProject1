@@ -9,7 +9,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 
 	private static final long serialVersionUID = 1L;
 	private static SubscriptionsRegister subscriptionRegister;
-	private static LinkedList<String> clientsRegister;
+	private static LinkedList<ClientRecord> clientsRegister;
 
 	public static void main(String[] args) {
 		System.out.println("Starting the Server");
@@ -43,8 +43,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	@Override
 	public boolean Join(String IP, int Port) throws RemoteException {
 		System.out.println("Client join ip: " + IP + ", Port: " + Port);
-		//clientsRegister.subscribeClient(subscription, client)
-		return false;
+		clientsRegister.add(new ClientRecord(IP, Port));
+		return true;
 	}
 
 	@Override
@@ -52,12 +52,20 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 			throws RemoteException {
 		System.out.println("Client subscribe ip: " + IP + ", Port: " + Port
 				+ ", article: " + Article);
-		return false;
+		
+		subscriptionRegister.subscribeClient(new Article(Article), new ClientRecord(IP, Port));
+		return true;
 	}
 
 	@Override
 	public boolean Publish(String Article) throws RemoteException {
 		System.out.println("Client publish: " + Article);
+		
+		LinkedList<ClientRecord> clients = subscriptionRegister.getClients(new Article(Article));
+		
+		/* Send them via UDP */
+		/* TODO */
+		
 		return false;
 	}
 
@@ -66,7 +74,10 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 			throws RemoteException {
 		System.out.println("Client unsubscribe ip: " + IP + ", Port: " + Port
 				+ ", article: " + Article);
-		return false;
+		
+		subscriptionRegister.unsubscribeClient(new Article(Article), new ClientRecord(IP, Port));
+		
+		return true;
 	}
 
 	@Override
