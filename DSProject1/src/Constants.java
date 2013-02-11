@@ -9,6 +9,6 @@ public interface Constants {
 	// Server constants
 	final int MAXCLIENTS = 5;
 	final int serverPort = 5105;
-	final String serverIp = "134.84.74.49";
+	final String serverIp = "134.84.45.173";
 	final String serverName = "rmi://"+serverIp+"/RomanCesarServer";
 }

@@ -2,18 +2,21 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.LinkedList;
 
 public class Server extends UnicastRemoteObject implements ServerInterface,
 		Constants {
 
 	private static final long serialVersionUID = 1L;
+	private static SubscriptionsRegister subscriptionRegister;
+	private static LinkedList<String> clientsRegister;
 
 	public static void main(String[] args) {
 		System.out.println("Starting the Server");
 		
 		// Init server ping
 		ServerPing serverPing = new ServerPing();
-		serverPing.start();
+		//serverPing.start();
 
 		try {
 			
@@ -40,6 +43,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	@Override
 	public boolean Join(String IP, int Port) throws RemoteException {
 		System.out.println("Client join ip: " + IP + ", Port: " + Port);
+		//clientsRegister.subscribeClient(subscription, client)
 		return false;
 	}
 

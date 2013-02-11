@@ -12,6 +12,7 @@ public class Article {
 	private boolean legalArticle = true;
 	private String raw;
 
+	
 	public Article(String rawArticle) {
 		raw = rawArticle;
 
@@ -27,6 +28,9 @@ public class Article {
 		 */
 		if (legalArticle)
 			classifyArticle();
+		
+		/* if some fields are empty, write "all" on them */
+		normalizeArticle();
 	}
 
 	private void getFields(String rawArticle) {
@@ -87,6 +91,13 @@ public class Article {
 		if (!validArticle && !validSubscription)
 			legalArticle = false;
 	}
+	
+	private void normalizeArticle(){
+		if(type.equals("")) type="all";
+		if(originator.equals("")) originator="all";
+		if(org.equals("")) org="all";
+		
+	}
 
 	private void checkType() {
 		if (!type.equals("") && !type.equalsIgnoreCase("sports")
@@ -107,6 +118,12 @@ public class Article {
 		return validArticle;
 	}
 
+	public String getType(){ return type; }
+	public String getOriginator(){ return originator; }
+	public String getOrg(){ return org; }
+	public String getContents(){ return contents; }
+	
+	
 	public boolean isValidSubscription() {
 		return validSubscription;
 	}
