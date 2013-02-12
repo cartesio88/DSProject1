@@ -21,7 +21,12 @@ public class Client implements Constants {
 			System.out.println(e);
 		}
 	}
-	
-	
+}
 
+class UDPClient
+{
+	public static void SendReply() throws Exception
+	{
+		
+	}
 }
