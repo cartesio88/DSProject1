@@ -8,7 +8,12 @@ import java.net.UnknownHostException;
 
 public class ServerPing extends Thread implements Constants {
 	boolean done = false;
+	private InetAddress _ip = null;
 
+	public ServerPing(InetAddress ip){
+		_ip = ip;
+	}
+	
 	@Override
 	public void run() {
 		System.out.println("Starting Server Ping");
@@ -17,7 +22,7 @@ public class ServerPing extends Thread implements Constants {
 			// Opening the socket
 			DatagramSocket registryServerSocket = new DatagramSocket(serverPort);
 
-			String registryMsg = "Register;RMI;" + serverIp + ";" + serverPort;
+			String registryMsg = "Register;RMI;" + _ip + ";" + serverPort;
 			
 			System.out.println("Registering with the string: "+registryMsg);
 			
