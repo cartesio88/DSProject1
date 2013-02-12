@@ -27,6 +27,6 @@ class UDPClient
 {
 	public static void SendReply() throws Exception
 	{
-		
+		String A;
 	}
 }
