@@ -6,16 +6,17 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
 
 public class ServerUDP extends Thread implements Constants {
 	boolean done = false;
-	private static InetAddress _ip = null;
-	private static DatagramSocket socket;
-	private static ServerRMI server;
-	
-	public ServerUDP(InetAddress ip, ServerRMI server) {
+	private InetAddress _ip = null;
+	private DatagramSocket socket;
+	private LinkedList<ServerGroup> serversRegister;
+
+	public ServerUDP(InetAddress ip, LinkedList<ServerGroup> serversRegister) {
 		_ip = ip;
-		this.server = server;
+		this.serversRegister = serversRegister;
 	}
 
 	@Override
@@ -24,10 +25,13 @@ public class ServerUDP extends Thread implements Constants {
 
 		try {
 			// Opening the socket
-			socket = new DatagramSocket(serverPort);
+			socket = new DatagramSocket(serverUDPPort);
 
 			/* Registering to the Registry Server */
 			registerRegistryServer();
+
+			/* Get the list of other servers */
+			getOtherServers();
 
 			// Listen to articles and pings
 			byte buffer[] = new byte[1024];
@@ -38,16 +42,12 @@ public class ServerUDP extends Thread implements Constants {
 				socket.receive(pkg);
 
 				String content = pkg.getData().toString();
-				System.out.println("Server! Received: "+content);
-				
-				if(content.equals("Ping")){ // Its a Ping! Answer
-					System.out.println("ServerPing: Ping received! Sending Pong");
-					pkg.setAddress(InetAddress.getByName(registryServerName));
-					pkg.setPort(registryServerPort);
-					socket.send(pkg);
-				}else{ // Its an Article, propagate it!
-					server.Publish(content, pkg.getAddress().getHostName(),  pkg.getPort());
-				}
+				System.out.println("Server! Received: " + content);
+
+				System.out.println("ServerPing: Ping received! Sending Pong");
+				pkg.setAddress(InetAddress.getByName("128.101.35.147"));
+				pkg.setPort(registryServerPort);
+				socket.send(pkg);
 			}
 
 			socket.close();
@@ -62,16 +62,74 @@ public class ServerUDP extends Thread implements Constants {
 			System.out.println("ERROR sending UDP package");
 		}
 
-	}	
+	}
+
+	private void getOtherServers() {
+		try {
+			String registryMsg = "GetList;RMI;" + _ip.toString().substring(1)
+					+ ";" + serverUDPPort;
+
+			System.out.println("Getting list of servers with the string: "
+					+ registryMsg);
+
+			InetAddress registryServerIp = InetAddress
+					.getByName(registryServerName);
+
+			DatagramPacket registryPkg = new DatagramPacket(
+					registryMsg.getBytes(), registryMsg.length(),
+					registryServerIp, registryServerPort);
+
+			socket.send(registryPkg);
+
+			socket.receive(registryPkg);
+
+			System.out.println("List Received!!: " + registryPkg.getData());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	private void registerRegistryServer() {
 		try {
 			String registryMsg = "Register;RMI;" + _ip.toString().substring(1)
-					+ ";" + serverPort + ";" + serverName + ";1099";
+					+ ";" + serverUDPPort + ";" + serverName + ";"
+					+ serverRMIPort;
 
 			System.out.println("Registering with the string: " + registryMsg);
 
-			InetAddress registryServerIp = InetAddress.getByName(registryServerName);
+			InetAddress registryServerIp = InetAddress
+					.getByName(registryServerName);
+
+			System.out.println("Sending register msg to: " + registryServerIp
+					+ ":" + registryServerPort);
+
+			DatagramPacket registryPkg = new DatagramPacket(
+					registryMsg.getBytes(), registryMsg.length(),
+					registryServerIp, registryServerPort);
+
+			System.out.println("ServerPing: Registering in registry server");
+
+			socket.send(registryPkg);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void deregisterRegistryServer() {
+		try {
+			String registryMsg = "Deregister;RMI;"
+					+ _ip.toString().substring(1) + ";" + serverUDPPort + ";"
+					+ serverName + ";" + serverRMIPort;
+
+			System.out.println("Registering with the string: " + registryMsg);
+
+			InetAddress registryServerIp = InetAddress
+					.getByName(registryServerName);
 
 			System.out.println("Sending register msg to: " + registryServerIp
 					+ ":" + registryServerPort);

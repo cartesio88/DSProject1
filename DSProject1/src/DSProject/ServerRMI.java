@@ -18,8 +18,8 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 	private static final long serialVersionUID = 1L;
 	private static SubscriptionsRegister subscriptionRegister;
 	private static LinkedList<HostRecord> clientsRegister;
-	private static LinkedList<HostRecord> serversRegister;
-	private static InetAddress _ip = null;
+	private static LinkedList<ServerGroup> serversRegister;
+	private static InetAddress serverIp = null;
 	private static DatagramSocket clientSocket = null;
 
 	public ServerRMI() throws RemoteException {
@@ -27,27 +27,23 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 
 		try {
 			System.out.println("Starting the Server");
-			System.setProperty("java.net.preferIPv4Stack", "true");
-
+	
 			subscriptionRegister = new SubscriptionsRegister();
 			clientsRegister = new LinkedList<HostRecord>();
-			serversRegister = new LinkedList<HostRecord>();
+			serversRegister = new LinkedList<ServerGroup>();
 
 			clientSocket = new DatagramSocket();
 
 			/* Get the IP from the interface */
 			getServerIP();
-
+			
 			// Init server ping
-			ServerUDP serverUDP = new ServerUDP(_ip, this);
+			ServerUDP serverUDP = new ServerUDP(serverIp, serversRegister);
 			serverUDP.start();
 
-			Registry registry = LocateRegistry.getRegistry();
-			registry.rebind(serverName, this);
+			/*Registry registry = LocateRegistry.getRegistry();
+			registry.rebind(serverName, this);*/
 
-		} catch (RemoteException e) {
-			System.out.println("ERROR creating the Server");
-			System.out.println(e);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -116,13 +112,18 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			if (!c.equals(entry))
 				SendArticle(Article, entry.getIP(), entry.getPort());
 		}
+		
 		/* ... and to the joined servers */
-		itr = serversRegister.iterator();
-		while (itr.hasNext()) {
-			HostRecord entry = itr.next();
-			if (!c.equals(entry))
-				SendArticle(Article, entry.getIP(), entry.getPort());
+		Iterator<ServerGroup> itr2 = serversRegister.iterator();
+		while (itr2.hasNext()) {
+			ServerGroup entry = itr2.next();
+			if(entry.ip != IP || entry.port != Port){
+				if(entry.joined){
+					entry.rmi.Publish(Article, serverIp.getCanonicalHostName(), serverRMIPort);
+				}
+			}			
 		}
+		
 		return false;
 	}
 
@@ -177,12 +178,12 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			while (nets.hasMoreElements()) {
 				NetworkInterface ni = nets.nextElement();
 				if (!ni.isLoopback() && ni.isUp()) {
-					_ip = ni.getInetAddresses().nextElement();
+					serverIp = ni.getInetAddresses().nextElement();
 					break;
 				}
 			}
-			System.setProperty("java.rmi.server.hostname",
-					_ip.getCanonicalHostName());
+			System.setProperty("java.rmi.server.hostname",serverIp.getCanonicalHostName());
+			
 			System.out.println("El valor de la ip es:"
 					+ System.getProperty("java.rmi.server.hostname"));
 

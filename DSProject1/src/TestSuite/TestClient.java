@@ -16,7 +16,7 @@ public class TestClient implements Constants{
 		System.out.println("Starting the Client");
 
 		try {
-			Registry registry = LocateRegistry.getRegistry(serverIp);
+			Registry registry = LocateRegistry.getRegistry("localhost");
 			Communicate server = (Communicate) registry
 					.lookup(serverName);
 			
