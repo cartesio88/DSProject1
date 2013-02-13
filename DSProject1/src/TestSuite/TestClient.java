@@ -9,7 +9,7 @@ import DSProject.Article;
 import DSProject.HostRecord;
 import DSProject.Constants;
 
-import DSProject.ServerInterface;
+import DSProject.Communicate;
 
 public class TestClient implements Constants{
 	public static void main(String[] args) {
@@ -17,7 +17,7 @@ public class TestClient implements Constants{
 
 		try {
 			Registry registry = LocateRegistry.getRegistry(serverIp);
-			ServerInterface server = (ServerInterface) registry
+			Communicate server = (Communicate) registry
 					.lookup(serverName);
 			
 			
@@ -58,7 +58,7 @@ public class TestClient implements Constants{
 			server.Subscribe(c2.getIP(), c1.getPort(), s2.encode());
 			server.Subscribe(c3.getIP(), c1.getPort(), s3.encode());
 			
-			System.out.println("Publishing A1");
+			/*System.out.println("Publishing A1");
 			server.Publish(a1.encode());
 			System.out.println("Publishing A2");
 			server.Publish(a2.encode());
@@ -73,7 +73,7 @@ public class TestClient implements Constants{
 			System.out.println("Publishing A7");
 			server.Publish(a7.encode());
 			System.out.println("Publishing A8");
-			server.Publish(a8.encode());
+			server.Publish(a8.encode());*/
 			
 			
 		} catch (RemoteException | NotBoundException e) {

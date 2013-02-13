@@ -9,7 +9,7 @@ public interface Constants {
 
 	// Server constants
 	final int MAXCLIENTS = 5;
-	final int serverPort = 5105;
+	final int serverPort = 3334;
 
 	//final String serverIp = "134.84.47.63";
 	final String serverIp = "localhost";

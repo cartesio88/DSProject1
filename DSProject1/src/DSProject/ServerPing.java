@@ -22,14 +22,15 @@ public class ServerPing extends Thread implements Constants {
 			// Opening the socket
 			DatagramSocket registryServerSocket = new DatagramSocket(serverPort);
 
-			String registryMsg = "Register;RMI;" + _ip + ";" + serverPort;
+			String registryMsg = "Register;RMI;" + _ip.toString().substring(1) + ";" + serverPort+";"+serverName+";1099";
 			
 			System.out.println("Registering with the string: "+registryMsg);
 			
 			InetAddress registryServerIp;
-
 			registryServerIp = InetAddress.getByName(registryServerName);
 
+			System.out.println("Sending register msg to: "+registryServerIp+":"+registryServerPort);
+			
 			DatagramPacket registryPkg = new DatagramPacket(
 					registryMsg.getBytes(), registryMsg.length(),
 					registryServerIp, registryServerPort);
@@ -43,19 +44,19 @@ public class ServerPing extends Thread implements Constants {
 					registryServerIp, registryServerPort);
 
 			System.out.println("ServerPing: Listening to the pings");
-			while (!done) {
+		//while (!done) {
 				System.out.println("ServerPing: Waiting for a ping");
 				registryServerSocket.receive(pingPkg);
 
-				pingPkg.setAddress(registryServerIp);
-				pingPkg.setPort(registryServerPort);
+				//pingPkg.setAddress(registryServerIp);
+				//pingPkg.setPort(registryServerPort);
 
 				System.out.println("ServerPing: Ping received! Sending Pong");
-				registryServerSocket.send(pingPkg);
+				//registryServerSocket.send(pingPkg);
 
-				pingPkg.setLength(1024);
+				//pingPkg.setLength(1024);
 
-			}
+			//}
 
 			registryServerSocket.close();
 

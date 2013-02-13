@@ -21,7 +21,7 @@ public class Client implements Constants {
 		try {
 
 			Registry registry = LocateRegistry.getRegistry(serverIp);
-			ServerInterface server = (ServerInterface) registry
+			Communicate server = (Communicate) registry
 					.lookup(serverName);
 
 			System.out.println("[Client] Pinging");
@@ -33,7 +33,7 @@ public class Client implements Constants {
 			server.Subscribe("127.0.0.1", udpPort,";;;");
 
 			System.out.println("[Client] Publishing article");
-			server.Publish(";;;Article1");
+			server.Publish(";;;Article1","127.0.0.1",udpPort);
 
 
 

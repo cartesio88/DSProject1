@@ -14,7 +14,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class Server extends UnicastRemoteObject implements ServerInterface,
+public class Server extends UnicastRemoteObject implements Communicate,
 		Constants {
 
 	private static final long serialVersionUID = 1L;
@@ -26,6 +26,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 
 	public static void main(String[] args) throws Exception {
 		System.out.println("Starting the Server");
+		System.setProperty("java.net.preferIPv4Stack", "true");
 
 		subscriptionRegister = new SubscriptionsRegister();
 		clientsRegister = new LinkedList<HostRecord>();
@@ -40,7 +41,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 		ServerPing serverPing = new ServerPing(_ip);
 		serverPing.start();
 
-		try {
+		/*try {
 
 			Server server = new Server();
 			Registry registry = LocateRegistry.getRegistry();
@@ -49,8 +50,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 		} catch (RemoteException e) {
 			System.out.println("ERROR creating the Server");
 			System.out.println(e);
-		}
-		// SendArticle("hi", );
+		}*/
 	}
 
 	protected Server() throws RemoteException {
@@ -59,9 +59,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 
 	protected static void getServerIP() {
 		try {
-
-			System.setProperty("java.net.preferIPv4Stack", "true");
-
 			Enumeration<NetworkInterface> nets = NetworkInterface
 					.getNetworkInterfaces();
 
@@ -69,14 +66,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 				NetworkInterface ni = nets.nextElement();
 				if (!ni.isLoopback() && ni.isUp()) {
 					_ip = ni.getInetAddresses().nextElement();
-					System.out.println(_ip);
 					break;
 				}
 			}
 
 			System.setProperty("java.rmi.server.hostname",
 					_ip.getCanonicalHostName());
-			System.out.println("El valor de la propi es:"
+			System.out.println("El valor de la ip es:"
 					+ System.getProperty("java.rmi.server.hostname"));
 
 		} catch (SocketException e) {
@@ -86,7 +82,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	}
 
 	@Override
-	public synchronized boolean JoinServer() throws RemoteException {
+	public synchronized boolean JoinServer(String IP, int Port) throws RemoteException {
 		System.out.println("Joining Server");
 		return false;
 	}
@@ -111,7 +107,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 	}
 
 	@Override
-	public synchronized boolean Publish(String Article) throws RemoteException {
+	public synchronized boolean Publish(String Article, String IP, int Port) throws RemoteException {
 		System.out.println("Client publish: " + Article);
 
 		LinkedList<HostRecord> clients = subscriptionRegister
@@ -166,4 +162,17 @@ public class Server extends UnicastRemoteObject implements ServerInterface,
 			System.out.println("[Server] ERROR sending UDP package");
 		}
 	}
+
+	@Override
+	public boolean LeaveServer(String IP, int Port) throws RemoteException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Boolean Leave(String IP, int Port) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
