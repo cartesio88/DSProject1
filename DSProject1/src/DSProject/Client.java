@@ -13,10 +13,8 @@ public class Client implements Constants {
 		System.out.println("Starting the Client");
 
 		/*Start UDP server*/
-
 		ClientUDPServer udpServer = new ClientUDPServer(udpPort);
 		udpServer.start();
-
 	
 		try {
 
