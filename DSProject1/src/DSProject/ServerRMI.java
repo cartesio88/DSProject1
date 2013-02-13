@@ -27,7 +27,8 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 
 		try {
 			System.out.println("Starting the Server");
-	
+			System.setProperty("java.net.preferIPv4Stack", "true");
+			
 			subscriptionRegister = new SubscriptionsRegister();
 			clientsRegister = new LinkedList<HostRecord>();
 			serversRegister = new LinkedList<ServerGroup>();
@@ -182,7 +183,7 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 					break;
 				}
 			}
-			System.setProperty("java.rmi.server.hostname",serverIp.getCanonicalHostName());
+			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
 			
 			System.out.println("El valor de la ip es:"
 					+ System.getProperty("java.rmi.server.hostname"));
