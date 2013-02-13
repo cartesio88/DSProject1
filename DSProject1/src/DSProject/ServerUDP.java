@@ -26,32 +26,28 @@ public class ServerUDP extends Thread implements Constants {
 			// Opening the socket
 			socket = new DatagramSocket(serverPort);
 
+			/* Registering to the Registry Server */
 			registerRegistryServer();
 
 			// Listen to articles and pings
-
 			byte buffer[] = new byte[1024];
 			DatagramPacket pkg = new DatagramPacket(buffer, 1024, null, 0);
 
 			while (!done) {
+				pkg.setLength(1024);
 				socket.receive(pkg);
 
 				String content = pkg.getData().toString();
 				System.out.println("Server! Received: "+content);
 				
 				if(content.equals("Ping")){ // Its a Ping! Answer
+					System.out.println("ServerPing: Ping received! Sending Pong");
 					pkg.setAddress(InetAddress.getByName(registryServerName));
 					pkg.setPort(registryServerPort);
 					socket.send(pkg);
 				}else{ // Its an Article, propagate it!
 					server.Publish(content, pkg.getAddress().getHostName(),  pkg.getPort());
 				}
-				
-				System.out.println("ServerPing: Ping received! Sending Pong");
-				// registryServerSocket.send(pingPkg);
-
-				// pingPkg.setLength(1024);
-
 			}
 
 			socket.close();
@@ -66,9 +62,7 @@ public class ServerUDP extends Thread implements Constants {
 			System.out.println("ERROR sending UDP package");
 		}
 
-	}
-
-	
+	}	
 
 	private void registerRegistryServer() {
 		try {
