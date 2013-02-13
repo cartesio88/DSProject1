@@ -1,6 +1,4 @@
 package DSProject;
-import java.net.InetAddress;
-
 
 public interface Constants {
 	// Registry-server constants

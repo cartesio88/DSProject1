@@ -14,7 +14,7 @@ public class Client implements Constants {
 
 		/*Start UDP server*/
 
-		UDPServer udpServer = new UDPServer(udpPort);
+		ClientUDPServer udpServer = new ClientUDPServer(udpPort);
 		udpServer.start();
 
 	
