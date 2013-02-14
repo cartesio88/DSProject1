@@ -20,15 +20,13 @@ public class TestClient implements Constants{
 			Communicate server = (Communicate) registry
 					.lookup(serverName);
 			
-			
 			/* Diferent tests */
 			/* Instantiate clients */
 			HostRecord c1 = new HostRecord("192.168.1.1",1234);
 			HostRecord c2 = new HostRecord("192.168.1.2",1235);
 			HostRecord c3 = new HostRecord("192.168.1.3",1236);
 			//HostRecord c4 = new HostRecord("192.168.1.4",1237);
-			
-			
+						
 			/* Instantiate articles */
 			Article a1 = new Article("","","","Article 1");
 			Article a2 = new Article("sports","","","Article 2");

@@ -12,9 +12,12 @@ public class ServerGroup {
 	public boolean joined;
 	public Communicate rmi;
 
-	public ServerGroup() {
+	public ServerGroup(String ip, String bindingName, int port) {
 		joined = false;
-
+		this.ip = ip;
+		this.bindingName = bindingName;
+		this.port = port;		
+		
 		Registry registry;
 		try {
 			registry = LocateRegistry.getRegistry(ip, port);
