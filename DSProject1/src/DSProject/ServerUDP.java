@@ -99,6 +99,30 @@ public class ServerUDP extends Thread implements Constants {
 			String list = new String(inPkg.getData(), "UTF-8");
 			System.out.println("List Received!!: " + list);
 			
+			//Splitlist
+			String[] temp = list.split(";");
+			String IP = null;
+			String BindingName = null;
+			int Port = 0;
+
+			for (int i=0; i<list.length();i++)
+				{
+					switch(i%3){
+					case 0: 
+						IP = temp[i];
+						System.out.println("IP: "+IP);
+						break;
+					case 1:
+						BindingName = temp[i];
+						System.out.println("Name: "+BindingName);
+						break;
+					case 2:
+						Port = Integer.valueOf(temp[i]);
+						System.out.println("Port: "+Port);
+						break;
+					}
+				}
+			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
