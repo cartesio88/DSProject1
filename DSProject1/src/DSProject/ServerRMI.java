@@ -17,16 +17,17 @@ import java.util.*;
 public class ServerRMI extends UnicastRemoteObject implements Communicate,
 		Constants {
 
-	private static final long serialVersionUID = 1L;
-	private static SubscriptionsRegister subscriptionRegister;
-	private static LinkedList<HostRecord> clientsRegister;
-	private static LinkedList<ServerGroup> serversRegister;
-	private static InetAddress serverIp = null;
-	private static DatagramSocket clientSocket = null;
+	private final long serialVersionUID = 1L;
+	private SubscriptionsRegister subscriptionRegister;
+	private LinkedList<HostRecord> clientsRegister;
+	private LinkedList<ServerGroup> serversRegister;
+	private InetAddress serverIp = null;
+	private DatagramSocket clientSocket = null;
 
-	public ServerRMI() throws RemoteException {
+	public ServerRMI(InetAddress serverIp) throws RemoteException {
 		super();
 
+		this.serverIp = serverIp;
 		try {
 			System.out.println("Starting the Server");
 			System.setProperty("java.net.preferIPv4Stack", "true");
@@ -39,18 +40,20 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			clientSocket = new DatagramSocket();
 
 			/* Get the IP from the interface */
-			getServerIP();
-			
+					
 			// Init server ping
 			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
 			ServerUDP serverUDP = new ServerUDP(serverIp, serversRegister);
 			serverUDP.start();
 
 			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
+			
 			Registry registry = LocateRegistry.createRegistry(serverRMIPort);
 			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
+			
 			Naming.rebind(serverName, this);
 			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
+			
 
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -197,33 +200,11 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 		return false;
 	}
 
-	protected static void getServerIP() {
-		try {
-			Enumeration<NetworkInterface> nets = NetworkInterface
-					.getNetworkInterfaces();
+	
 
-			while (nets.hasMoreElements()) {
-				NetworkInterface ni = nets.nextElement();
-				if (!ni.isLoopback() && ni.isUp()) {
-					serverIp = ni.getInetAddresses().nextElement();
-					break;
-				}
-			}
-			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
-			
-			System.out.println("El valor de la ip es:"
-					+ System.getProperty("java.rmi.server.hostname"));
-
-		} catch (SocketException e) {
-			System.out.println("ERROR getting the interfaces of the device");
-			e.printStackTrace();
-		}
-	}
-
-	protected static void SendArticle(String Article, String IP, int port) {
+	protected void SendArticle(String Article, String IP, int port) {
 		System.out.println("Sending article.... to " + IP + ":" + port);
 		try {
-
 			InetAddress ClientIP = InetAddress.getByName(IP);
 
 			byte[] outData = new byte[1024];

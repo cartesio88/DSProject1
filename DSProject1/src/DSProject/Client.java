@@ -29,7 +29,6 @@ public class Client implements Constants {
 		
 		getClientIP();
 
-		System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
 		
 		Scanner scan = new Scanner(System.in);
 		System.out.println("Enter Server' IP you want to join: ");
@@ -38,12 +37,12 @@ public class Client implements Constants {
 		System.out.println("Enter port: ");
 		Port = Integer.valueOf(scan.nextLine());
 
-		System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
+		
 		Registry registry = LocateRegistry.getRegistry(serverIp, Port);
-		System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
+			
 		Communicate server = null;
 		server = (Communicate) registry.lookup(serverName);
-		System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
+		
 
 		while (!done) {
 
@@ -123,10 +122,10 @@ public class Client implements Constants {
 					break;
 				}
 			}
-			System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
+			//System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
 			
-			System.out.println("El valor de la ip es:"
-					+ System.getProperty("java.rmi.server.hostname"));
+			//System.out.println("El valor de la ip es:"
+					//+ System.getProperty("java.rmi.server.hostname"));
 
 		} catch (SocketException e) {
 			System.out.println("ERROR getting the interfaces of the device");
