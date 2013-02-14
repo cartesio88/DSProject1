@@ -1,6 +1,4 @@
 package DSProject;
-import java.net.InetAddress;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -10,8 +8,8 @@ import java.util.Scanner;
 public class Client implements Constants {
 
 	private static int udpPort = 3333;
-	
-	public static void main(String[] args) throws InterruptedException, RemoteException, NotBoundException {
+	//throws InterruptedException, RemoteException, NotBoundException
+	public static void main(String[] args)  {
 		System.out.println("Starting the Client");
 
 		String serverIp = null;
@@ -25,12 +23,12 @@ public class Client implements Constants {
 
 		System.out.println("Enter port: ");
 		Port = Integer.valueOf(scan.nextLine());
+		try{
+			Registry registry = LocateRegistry.getRegistry(serverIp);
+			Communicate server = (Communicate) registry.lookup(serverName);		
+	
 		
-		Registry registry = LocateRegistry.getRegistry(serverIp);
-		Communicate server = (Communicate) registry.lookup(serverName);		
-				
-		
-		System.out.println("Choose the option: \n" +
+			System.out.println("Choose the option: \n" +
 				"1) Join\n" +
 				"2) Subscribe\n" +
 				"3) Publish\n" +
@@ -38,48 +36,48 @@ public class Client implements Constants {
 				"5) Exit\n");
 		
 		
-		String Choice = scan.nextLine();
-		Integer Option = Integer.valueOf(Choice);
-		while(!done){		
-			switch(Option){ 
-			case 1:
+			String Choice = scan.nextLine();
+			Integer Option = Integer.valueOf(Choice);
+			while(!done){		
+				switch(Option){ 
+				case 1:
 
-				server.JoinServer(serverIp, Port);
-				break;
+					server.JoinServer(serverIp, Port);
+					break;
 
-			case 2:
+				case 2:
 
-				System.out.println("Enter Article:");
-				Article = scan.nextLine();			
-				server.Subscribe(serverIp, Port, Article);
-				break;
+					System.out.println("Enter Article:");
+					Article = scan.nextLine();			
+					server.Subscribe(serverIp, Port, Article);
+					break;
 			
-			case 3: 		
+				case 3: 		
 			
-				System.out.println("Enter Article:");
-				Article = scan.nextLine();
-				server.Publish(Article, serverIp, Port);
-				break;
+					System.out.println("Enter Article:");
+					Article = scan.nextLine();
+					server.Publish(Article, serverIp, Port);
+					break;
 			
-			case 4:		
+				case 4:		
 						
-				System.out.println("Enter Article:");
-				Article = scan.nextLine();
-				server.Unsubscribe(serverIp, Port, Article);
-				break;
-			case 5:
+					System.out.println("Enter Article:");
+					Article = scan.nextLine();
+					server.Unsubscribe(serverIp, Port, Article);
+					break;
+				case 5:
 			
-				System.exit(0);
-				break;
+					System.exit(0);
+					break;
 				
-		}
+				}
 		}		
 			
 		/*Start UDP server*/
 		ClientUDPServer udpServer = new ClientUDPServer(udpPort);
 		udpServer.start();
 	
-		try {
+		
 
 			//Registry registry = LocateRegistry.getRegistry(serverIp);
 			//Communicate server = (Communicate) registry
@@ -95,10 +93,7 @@ public class Client implements Constants {
 
 			System.out.println("[Client] Publishing article");
 			server.Publish(";;;Article1","127.0.0.1",udpPort);
-
-
-
-		} catch (RemoteException e) {
+		} catch (RemoteException | NotBoundException e) {
 			System.out.println("Error locating the server");
 			System.out.println(e);
 		}
