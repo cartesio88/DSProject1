@@ -1,8 +1,10 @@
 package DSProject;
 
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -19,7 +21,7 @@ public class Client implements Constants {
 			RemoteException, NotBoundException {
 		System.out.println("Starting the Client");
 		System.setProperty("java.net.preferIPv4Stack", "true");
-
+		
 		String serverIp;
 		Integer Port = null;
 		String Article = null;
@@ -27,6 +29,8 @@ public class Client implements Constants {
 		
 		getClientIP();
 
+		System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
+		
 		Scanner scan = new Scanner(System.in);
 		System.out.println("Enter Server' IP you want to join: ");
 		serverIp = scan.nextLine();
@@ -34,8 +38,12 @@ public class Client implements Constants {
 		System.out.println("Enter port: ");
 		Port = Integer.valueOf(scan.nextLine());
 
-		Registry registry = LocateRegistry.getRegistry(serverIp);
-		Communicate server = (Communicate) registry.lookup(serverName);
+		System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
+		Registry registry = LocateRegistry.getRegistry(serverIp, Port);
+		System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
+		Communicate server = null;
+		server = (Communicate) registry.lookup(serverName);
+		System.setProperty("java.rmi.server.hostname",clientIp.getHostAddress());
 
 		while (!done) {
 

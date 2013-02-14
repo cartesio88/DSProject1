@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -28,6 +30,7 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 		try {
 			System.out.println("Starting the Server");
 			System.setProperty("java.net.preferIPv4Stack", "true");
+
 			
 			subscriptionRegister = new SubscriptionsRegister();
 			clientsRegister = new LinkedList<HostRecord>();
@@ -39,14 +42,19 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			getServerIP();
 			
 			// Init server ping
+			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
 			ServerUDP serverUDP = new ServerUDP(serverIp, serversRegister);
 			serverUDP.start();
 
+			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
 			Registry registry = LocateRegistry.createRegistry(serverRMIPort);
-			//Registry registry = LocateRegistry.getRegistry();
-			registry.rebind(serverName, this);
+			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
+			Naming.rebind(serverName, this);
+			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
 
 		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 	}

@@ -33,23 +33,33 @@ public class ServerUDP extends Thread implements Constants {
 			/* Get the list of other servers */
 			getOtherServers();
 
+
 			// Listen to articles and pings
 			byte buffer[] = new byte[1024];
 			DatagramPacket pkg = new DatagramPacket(buffer, 1024, null, 0);
 
+			
+			InetAddress registryServerIp = InetAddress
+					.getByName(registryServerName);
+			
 			while (!done) {
+												
 				pkg.setLength(1024);
 				socket.receive(pkg);
 
-				String content = pkg.getData().toString();
-				System.out.println("Server! Received: " + content);
-
-				System.out.println("ServerPing: Ping received! Sending Pong");
+				String content = new String(pkg.getData(), "UTF-8");
+				
+				//System.out.println("ServerPing: Ping received! Sending Pong: "+content);
+				
 				pkg.setAddress(InetAddress.getByName("128.101.35.147"));
-				pkg.setPort(registryServerPort);
-				socket.send(pkg);
+				
+				String msg = "heartbeat";
+				DatagramPacket outPkg = new DatagramPacket(content.getBytes(), content.getBytes().length, registryServerIp, pkg.getPort() );
+			
+				socket.send(outPkg);
 			}
-
+				
+				
 			socket.close();
 
 		} catch (UnknownHostException e) {
@@ -81,9 +91,14 @@ public class ServerUDP extends Thread implements Constants {
 
 			socket.send(registryPkg);
 
-			socket.receive(registryPkg);
+			
+			byte buffer[] = new byte[1024];
+			DatagramPacket inPkg = new DatagramPacket(buffer, 1024, null, 0);
+			socket.receive(inPkg);
 
-			System.out.println("List Received!!: " + registryPkg.getData());
+			String list = new String(inPkg.getData(), "UTF-8");
+			System.out.println("List Received!!: " + list);
+			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
