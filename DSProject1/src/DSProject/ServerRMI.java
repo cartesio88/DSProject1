@@ -43,6 +43,7 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			//Registry registry = LocateRegistry.createRegistry(serverRMIPort);
 			Naming.rebind(serverName, this);
 						
+			
 
 		} catch (SocketException e) {
 			e.printStackTrace();
