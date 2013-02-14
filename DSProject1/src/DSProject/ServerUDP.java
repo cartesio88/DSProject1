@@ -33,11 +33,9 @@ public class ServerUDP extends Thread implements Constants {
 			/* Get the list of other servers */
 			getOtherServers();
 
-
 			// Listen to articles and pings
 			byte buffer[] = new byte[1024];
 			DatagramPacket pkg = new DatagramPacket(buffer, 1024, null, 0);
-
 			
 			InetAddress registryServerIp = InetAddress
 					.getByName(registryServerName);
@@ -52,8 +50,7 @@ public class ServerUDP extends Thread implements Constants {
 				//System.out.println("ServerPing: Ping received! Sending Pong: "+content);
 				
 				pkg.setAddress(InetAddress.getByName("128.101.35.147"));
-				
-				String msg = "heartbeat";
+			
 				DatagramPacket outPkg = new DatagramPacket(content.getBytes(), content.getBytes().length, registryServerIp, pkg.getPort() );
 			
 				socket.send(outPkg);
@@ -76,6 +73,11 @@ public class ServerUDP extends Thread implements Constants {
 
 	private void getOtherServers() {
 		try {
+	
+			/*
+			 * GET THE SERVERS LIST
+			 */
+			
 			String registryMsg = "GetList;RMI;" + _ip.toString().substring(1)
 					+ ";" + serverUDPPort;
 
@@ -99,6 +101,7 @@ public class ServerUDP extends Thread implements Constants {
 			String list = new String(inPkg.getData(), "UTF-8");
 			System.out.println("List Received!!: " + list);
 			
+
 			//Splitlist
 			String[] temp = list.split(";");
 			String IP = null;
@@ -122,6 +125,41 @@ public class ServerUDP extends Thread implements Constants {
 						break;
 					}
 				}
+
+			/*
+			 * PROCESS THE LIST, AND JOIN THE SERVERS
+			 * IP - BINDING-NAME - PORT
+			 */
+			String ip;
+			String name;
+			int port;
+			int index;
+			while(list.length() > 0){
+				// Getting IP
+				index = list.indexOf(';');
+				ip = list.substring(0, index);
+				list = list.substring(index+1);
+				
+				// Getting binding name
+				index = list.indexOf(';');
+				name = list.substring(0, index);
+				list = list.substring(index+1);
+				
+				// Getting port
+				index = list.indexOf(';');
+				if(index == -1) //Last value
+					index = list.length();
+				port = Integer.parseInt(list.substring(0, index));
+				list = list.substring(0, index+1);
+				
+				// Creating the server
+				ServerGroup s = new ServerGroup(ip, name, port);
+				System.out.println("Joining Server Group: "+s);
+				serversRegister.add(s);
+				s.rmi.JoinServer(_ip.getHostAddress(), serverRMIPort);
+			}
+			
+
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -130,6 +168,8 @@ public class ServerUDP extends Thread implements Constants {
 		}
 
 	}
+	
+	
 
 	private void registerRegistryServer() {
 		try {
@@ -180,6 +220,7 @@ public class ServerUDP extends Thread implements Constants {
 			System.out.println("ServerPing: Registering in registry server");
 
 			socket.send(registryPkg);
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -188,7 +229,9 @@ public class ServerUDP extends Thread implements Constants {
 	}
 
 	public void stopServer() {
+		deregisterRegistryServer();
 		done = true;
+		
 	}
 
 }
