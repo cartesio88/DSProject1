@@ -1,4 +1,3 @@
-package DSProject;
 import java.net.InetAddress;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -13,8 +12,11 @@ public class Client implements Constants {
 	
 	public static void main(String[] args) throws InterruptedException, RemoteException, NotBoundException {
 		System.out.println("Starting the Client");
-		
-		
+
+		Scanner scan = new Scanner(System.in);
+		String serverIp = null;
+		System.out.println("Enter Server IP: ");
+		serverIp = scan.nextLine();
 		
 		Registry registry = LocateRegistry.getRegistry(serverIp);
 		Communicate server = (Communicate) registry.lookup(serverName);		
@@ -26,12 +28,11 @@ public class Client implements Constants {
 				"3) Publish\n" +
 				"4) Unsubscribe\n");
 		
-		Scanner scan = new Scanner(System.in);
+		
 		String Choice = scan.nextLine();
 		
 		Integer Option = Integer.valueOf(Choice);
-		
-		String IP = null;
+				
 		Integer Port = null;
 		String Article = null;
 		
