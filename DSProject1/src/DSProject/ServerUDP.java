@@ -36,27 +36,28 @@ public class ServerUDP extends Thread implements Constants {
 			// Listen to articles and pings
 			byte buffer[] = new byte[1024];
 			DatagramPacket pkg = new DatagramPacket(buffer, 1024, null, 0);
-			
+
 			InetAddress registryServerIp = InetAddress
 					.getByName(registryServerName);
-			
+
 			while (!done) {
-												
+
 				pkg.setLength(1024);
 				socket.receive(pkg);
 
 				String content = new String(pkg.getData(), "UTF-8");
-				
-				//System.out.println("ServerPing: Ping received! Sending Pong: "+content);
-				
+
+				// System.out.println("ServerPing: Ping received! Sending Pong: "+content);
+
 				pkg.setAddress(InetAddress.getByName("128.101.35.147"));
-			
-				DatagramPacket outPkg = new DatagramPacket(content.getBytes(), content.getBytes().length, registryServerIp, pkg.getPort() );
-			
+
+				DatagramPacket outPkg = new DatagramPacket(content.getBytes(),
+						content.getBytes().length, registryServerIp,
+						pkg.getPort());
+
 				socket.send(outPkg);
 			}
-				
-				
+
 			socket.close();
 
 		} catch (UnknownHostException e) {
@@ -73,11 +74,11 @@ public class ServerUDP extends Thread implements Constants {
 
 	private void getOtherServers() {
 		try {
-	
+
 			/*
 			 * GET THE SERVERS LIST
 			 */
-			
+
 			String registryMsg = "GetList;RMI;" + _ip.toString().substring(1)
 					+ ";" + serverUDPPort;
 
@@ -93,74 +94,61 @@ public class ServerUDP extends Thread implements Constants {
 
 			socket.send(registryPkg);
 
-			
 			byte buffer[] = new byte[1024];
 			DatagramPacket inPkg = new DatagramPacket(buffer, 1024, null, 0);
 			socket.receive(inPkg);
 
 			String list = new String(inPkg.getData(), "UTF-8");
 			System.out.println("List Received!!: " + list);
-			
 
-			//Splitlist
+			// Splitlist
 			String[] temp = list.split(";");
 			String IP = null;
 			String BindingName = null;
 			int Port = 0;
-
-			for (int i=0; i<list.length();i++)
-				{
-					switch(i%3){
-					case 0: 
-						IP = temp[i];
-						System.out.println("IP: "+IP);
-						break;
-					case 1:
-						BindingName = temp[i];
-						System.out.println("Name: "+BindingName);
-						break;
-					case 2:
-						Port = Integer.valueOf(temp[i]);
-						System.out.println("Port: "+Port);
-						break;
-					}
+			
+			for (int i = 0; i < temp.length; i++) {
+				switch (i % 3) {
+				case 0:
+					IP = temp[i];
+					// System.out.println("IP: "+IP);
+					break;
+				case 1:
+					BindingName = temp[i];
+					// System.out.println("Name: "+BindingName);
+					break;
+				case 2:
+					Port = Integer.parseInt(temp[i]);
+					// System.out.println("Port: "+Port);
+					// Creating the server
+					ServerGroup s = new ServerGroup(IP, BindingName, Port);
+					System.out.println("Joining Server Group: " + s);
+					serversRegister.add(s);
+					s.rmi.JoinServer(_ip.getHostAddress(), serverRMIPort);
+					break;
 				}
+			}
 
 			/*
-			 * PROCESS THE LIST, AND JOIN THE SERVERS
-			 * IP - BINDING-NAME - PORT
+			 * PROCESS THE LIST, AND JOIN THE SERVERS IP - BINDING-NAME - PORT
 			 */
-			String ip;
-			String name;
-			int port;
-			int index;
-			while(list.length() > 0){
-				// Getting IP
-				index = list.indexOf(';');
-				ip = list.substring(0, index);
-				list = list.substring(index+1);
-				
-				// Getting binding name
-				index = list.indexOf(';');
-				name = list.substring(0, index);
-				list = list.substring(index+1);
-				
-				// Getting port
-				index = list.indexOf(';');
-				if(index == -1) //Last value
-					index = list.length();
-				port = Integer.parseInt(list.substring(0, index));
-				list = list.substring(0, index+1);
-				
-				// Creating the server
-				ServerGroup s = new ServerGroup(ip, name, port);
-				System.out.println("Joining Server Group: "+s);
-				serversRegister.add(s);
-				s.rmi.JoinServer(_ip.getHostAddress(), serverRMIPort);
-			}
-			
 
-			
+			/*
+			 * String ip; String name; int port; int index; while(list.length()
+			 * > 0){ // Getting IP index = list.indexOf(';'); ip =
+			 * list.substring(0, index); list = list.substring(index+1);
+			 * 
+			 * // Getting binding name index = list.indexOf(';'); name =
+			 * list.substring(0, index); list = list.substring(index+1);
+			 * 
+			 * // Getting port index = list.indexOf(';'); if(index == -1) //Last
+			 * value index = list.length(); port =
+			 * Integer.parseInt(list.substring(0, index)); list =
+			 * list.substring(0, index+1);
+			 */
+
+			// }
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -168,8 +156,6 @@ public class ServerUDP extends Thread implements Constants {
 		}
 
 	}
-	
-	
 
 	private void registerRegistryServer() {
 		try {
@@ -231,7 +217,7 @@ public class ServerUDP extends Thread implements Constants {
 	public void stopServer() {
 		deregisterRegistryServer();
 		done = true;
-		
+
 	}
 
 }

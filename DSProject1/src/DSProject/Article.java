@@ -66,7 +66,7 @@ public class Article {
 			legalArticle = false;
 			return;
 		}
-		type = tempArticle.substring(0, pos);
+		type = tempArticle.substring(0, pos).toLowerCase();
 		tempArticle = tempArticle.substring(pos + 1);
 
 		/* Get originator */
@@ -76,7 +76,7 @@ public class Article {
 			legalArticle = false;
 			return;
 		}
-		originator = tempArticle.substring(0, pos);
+		originator = tempArticle.substring(0, pos).toLowerCase();
 		tempArticle = tempArticle.substring(pos + 1);
 
 		/* Get org */
@@ -86,7 +86,7 @@ public class Article {
 			legalArticle = false;
 			return;
 		}
-		org = tempArticle.substring(0, pos);
+		org = tempArticle.substring(0, pos).toLowerCase();
 		tempArticle = tempArticle.substring(pos + 1);
 
 		/* Get contents */
@@ -127,13 +127,13 @@ public class Article {
 
 	private void checkType() {
 		if (!type.equals("") && !type.equalsIgnoreCase("sports")
-				&& !type.equalsIgnoreCase("lifestyle")
-				&& !type.equalsIgnoreCase("entertainment")
-				&& !type.equalsIgnoreCase("business")
-				&& !type.equalsIgnoreCase("technology")
-				&& !type.equalsIgnoreCase("science")
-				&& !type.equalsIgnoreCase("politics")
-				&& !type.equalsIgnoreCase("health")) {
+				&& !type.equals("lifestyle")
+				&& !type.equals("entertainment")
+				&& !type.equals("business")
+				&& !type.equals("technology")
+				&& !type.equals("science")
+				&& !type.equals("politics")
+				&& !type.equals("health")) {
 			System.out.println("ERROR: Illegal type: " + type);
 			legalArticle = false;
 		}
