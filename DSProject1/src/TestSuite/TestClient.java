@@ -76,9 +76,12 @@ public class TestClient implements Constants{
 			server.Publish(a8.encode());*/
 			
 			
-		} catch (RemoteException | NotBoundException e) {
+		} catch (RemoteException e) {
 			System.out.println("Error locating the server");
 			System.out.println(e);
+		} catch (NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

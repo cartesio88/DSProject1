@@ -42,8 +42,9 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			ServerUDP serverUDP = new ServerUDP(serverIp, serversRegister);
 			serverUDP.start();
 
-			/*Registry registry = LocateRegistry.getRegistry();
-			registry.rebind(serverName, this);*/
+			Registry registry = LocateRegistry.createRegistry(serverRMIPort);
+			//Registry registry = LocateRegistry.getRegistry();
+			registry.rebind(serverName, this);
 
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -56,21 +57,31 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 		HostRecord s = new HostRecord(IP, Port);
 		if (!serversRegister.contains(s)) {
 			System.out.println("Joining Server: " + s);
+			
+			Iterator<ServerGroup> itr = serversRegister.iterator();
+			while (itr.hasNext()) {
+				ServerGroup entry = itr.next();
+				if (entry.ip.equals(IP) && entry.port == Port)
+					entry.joined = true;
+			}			
+			
 			return true;
 		}
+		System.out.println("ERROR: Client already joined: " + IP + ", Port: " + Port);
 		return false;
 	}
 
 	@Override
 	public synchronized boolean Join(String IP, int Port)
 			throws RemoteException {
-		System.out.println("Client join ip: " + IP + ", Port: " + Port);
-
+		
 		HostRecord c = new HostRecord(IP, Port);
 		if (!clientsRegister.contains(c)) {
+			System.out.println("Client join ip: " + IP + ", Port: " + Port);
 			clientsRegister.add(new HostRecord(IP, Port));
 			return true;
 		}
+		System.out.println("ERROR: Client already joined: " + IP + ", Port: " + Port);
 		return false;
 	}
 
@@ -84,10 +95,11 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 
 		System.out.println("Client subscribe: " + c + ", article: " + Article);
 
-		subscriptionRegister.subscribeClient(new Article(Article),
-				new HostRecord(IP, Port));
-
-		return true;
+		Article a = new Article(Article);
+		if(!a.isValidSubscription()) return false;
+		
+		return subscriptionRegister.subscribeClient(a, new HostRecord(IP, Port));
+				
 	}
 
 	@Override
@@ -99,8 +111,12 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 		if (!clientsRegister.contains(c))
 			return false;
 
+		Article a = new Article(Article);
+		
+		if(!a.isValidArticle()) return false;
+		
 		LinkedList<HostRecord> clients = subscriptionRegister
-				.getClients(new Article(Article));
+				.getClients(a);
 
 		System.out.println("Sending to clients:");
 		System.out.println(clients);
@@ -125,7 +141,7 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			}			
 		}
 		
-		return false;
+		return true;
 	}
 
 	@Override
@@ -138,11 +154,13 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 
 		System.out
 				.println("Client unsubscribe: " + c + ", article: " + Article);
+		
+		Article a = new Article(Article);
+		if(!a.isValidSubscription()) return false;
+		
+		return subscriptionRegister.unsubscribeClient(a,new HostRecord(IP, Port));
+				
 
-		subscriptionRegister.unsubscribeClient(new Article(Article),
-				new HostRecord(IP, Port));
-
-		return true;
 	}
 
 	@Override

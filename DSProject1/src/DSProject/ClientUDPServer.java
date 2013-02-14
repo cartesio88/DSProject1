@@ -10,7 +10,6 @@ public class ClientUDPServer extends Thread implements Constants {
     
     public ClientUDPServer(int listenPort){
         this.listenPort = listenPort;
-        
     }
      
     public void run() {

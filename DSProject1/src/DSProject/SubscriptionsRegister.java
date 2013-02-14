@@ -14,7 +14,7 @@ public class SubscriptionsRegister {
 		initStructure();
 	}
 
-	public void subscribeClient(Article subscription, HostRecord client) {
+	public boolean subscribeClient(Article subscription, HostRecord client) {
 		//System.out.println("Subscribing client " + client);
 
 		/* Look for type */
@@ -25,13 +25,11 @@ public class SubscriptionsRegister {
 		if (originatorRegister == null) { /* Specified type does not exist */
 			System.out.println("ERROR Subscribing the client: " + client
 					+ ". Invalid subscription type.");
-			return;
+			return false;
 		}
 
-		//System.out.println("Type exists");
-
+		
 		/* Look for originator */
-		//System.out.println("Checking for originator...");
 		HashMap orgRegister = (HashMap) originatorRegister.get(subscription
 				.getOriginator());
 		if (orgRegister == null) { /*
@@ -65,23 +63,27 @@ public class SubscriptionsRegister {
 		if (!clientsRegister.add(client)) {
 			System.out
 					.println("ERROR Storing the client in the register. Maybe there is not enough free memory.");
+			return false;
 		}
+		return true;
 	}
 
-	public void unsubscribeClient(Article subscription, HostRecord client) {
+	public boolean unsubscribeClient(Article subscription, HostRecord client) {
 		/* Look for type */
 		HashMap originatorRegister = (HashMap) register.get(subscription
 				.getType());
 		if (originatorRegister == null) { /* Specified type does not exist */
 			System.out.println("ERROR Unubscribing the client: " + client
 					+ ". Invalid subscription type.");
+			return false;
 		}
 
 		/* Look for originator */
 		HashMap orgRegister = (HashMap) originatorRegister.get(subscription
 				.getOriginator());
 		if (orgRegister == null) {
-			System.out.println("ERROR Unsubscribing client 1!: " + client);
+			System.out.println("ERROR Unsubscribing client!: " + client);
+			return false;
 		}
 
 		/* Look for Org */
@@ -89,13 +91,16 @@ public class SubscriptionsRegister {
 		LinkedList<HostRecord> clientsRegister = (LinkedList<HostRecord>) orgRegister
 				.get(subscription.getOrg());
 		if (clientsRegister == null) {
-			System.out.println("ERROR Unsubscribing client 2!: " + client);
+			System.out.println("ERROR Unsubscribing client!: " + client);
+			return false;
 		}
 
 		/* Store client */
 		if (!clientsRegister.remove(client)) {
-			System.out.println("ERROR Unsubscribing client 3!: " + client);
+			System.out.println("ERROR Unsubscribing client!: " + client);
+			return false;
 		}
+		return true;
 	}
 
 	public LinkedList<HostRecord> getClients(Article article) {

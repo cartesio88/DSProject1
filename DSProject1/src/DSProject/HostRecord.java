@@ -22,4 +22,9 @@ public class HostRecord {
 		
 		return string;
 	}
+	
+	public boolean equals(Object o){
+		HostRecord c = (HostRecord) o;
+		return ip.equals(c.getIP()) && port == c.getPort();
+	}
 }
