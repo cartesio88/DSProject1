@@ -8,6 +8,8 @@ import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
@@ -26,6 +28,9 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 		super();
 
 		this.serverIp = serverIp;
+		
+		System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
+		
 		try {
 			System.out.println("Starting the Server");
 			System.setProperty("java.net.preferIPv4Stack", "true");
@@ -40,14 +45,12 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			ServerUDP serverUDP = new ServerUDP(serverIp, serversRegister);
 			serverUDP.start();
 				
-			//Registry registry = LocateRegistry.createRegistry(serverRMIPort);
-			Naming.rebind(serverName, this);
+			Registry registry = LocateRegistry.createRegistry(serverRMIPort);
+			registry.rebind(serverName, this);
 						
 			
 
 		} catch (SocketException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 	}
