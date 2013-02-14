@@ -1,3 +1,4 @@
+package DSProject;
 import java.net.InetAddress;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -13,10 +14,17 @@ public class Client implements Constants {
 	public static void main(String[] args) throws InterruptedException, RemoteException, NotBoundException {
 		System.out.println("Starting the Client");
 
-		Scanner scan = new Scanner(System.in);
 		String serverIp = null;
-		System.out.println("Enter Server IP: ");
+		Integer Port = null;
+		String Article = null;
+		boolean done = false;
+		
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Enter Server' IP you want to join: ");
 		serverIp = scan.nextLine();
+
+		System.out.println("Enter port: ");
+		Port = Integer.valueOf(scan.nextLine());
 		
 		Registry registry = LocateRegistry.getRegistry(serverIp);
 		Communicate server = (Communicate) registry.lookup(serverName);		
@@ -26,72 +34,46 @@ public class Client implements Constants {
 				"1) Join\n" +
 				"2) Subscribe\n" +
 				"3) Publish\n" +
-				"4) Unsubscribe\n");
+				"4) Unsubscribe\n" +
+				"5) Exit\n");
 		
 		
 		String Choice = scan.nextLine();
-		
 		Integer Option = Integer.valueOf(Choice);
+		while(!done){		
+			switch(Option){ 
+			case 1:
+
+				server.JoinServer(serverIp, Port);
+				break;
+
+			case 2:
+
+				System.out.println("Enter Article:");
+				Article = scan.nextLine();			
+				server.Subscribe(serverIp, Port, Article);
+				break;
+			
+			case 3: 		
+			
+				System.out.println("Enter Article:");
+				Article = scan.nextLine();
+				server.Publish(Article, serverIp, Port);
+				break;
+			
+			case 4:		
+						
+				System.out.println("Enter Article:");
+				Article = scan.nextLine();
+				server.Unsubscribe(serverIp, Port, Article);
+				break;
+			case 5:
+			
+				System.exit(0);
+				break;
 				
-		Integer Port = null;
-		String Article = null;
-		
-		switch(Option){ 
-		case 1:
-			System.out.println("Enter Server IP: ");
-			IP = scan.nextLine();
-		
-			System.out.println("Enter port: ");
-			Port = Integer.valueOf(scan.nextLine());
-			
-			server.JoinServer(IP, Port);
-			
-			break;
-		case 2:
-
-			System.out.println("Enter Server IP: ");
-			IP = scan.nextLine();
-		
-			System.out.println("Enter port: ");
-			Port = Integer.valueOf(scan.nextLine());
-			
-			System.out.println("Enter Article:");
-			Article = scan.nextLine();
-			
-			server.Subscribe(IP, Port, Article);
-			
-			break;
-			
-		case 3: 
-
-			System.out.println("Enter Server IP: ");
-			IP = scan.nextLine();
-		
-			System.out.println("Enter port: ");
-			Port = Integer.valueOf(scan.nextLine());
-			
-			System.out.println("Enter Article:");
-			Article = scan.nextLine();
-
-			server.Publish(Article, IP, Port);
-			
-			break;
-			
-		case 4:
-			
-			System.out.println("Enter Server IP: ");
-			IP = scan.nextLine();
-		
-			System.out.println("Enter port: ");
-			Port = Integer.valueOf(scan.nextLine());
-			
-			System.out.println("Enter Article:");
-			Article = scan.nextLine();
-			
-			server.Unsubscribe(IP, Port, Article);
-			
 		}
-				
+		}		
 			
 		/*Start UDP server*/
 		ClientUDPServer udpServer = new ClientUDPServer(udpPort);
