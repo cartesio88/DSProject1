@@ -58,7 +58,17 @@ public class Client implements Constants {
 			p = Integer.valueOf(scan.nextLine());
 		}
 		Port = p;
-		System.out.println(Port);
+
+		System.out.println("Enter listen port: ");
+		p = Integer.valueOf(scan.nextLine());
+
+		
+		while (!(p > 0 && p < 55901)) {
+			System.out.println("Port has wrong format try again: ");
+			p = Integer.valueOf(scan.nextLine());
+		}
+		udpPort = p;
+		
 		Registry registry = LocateRegistry.getRegistry(serverIp, Port);
 
 		Communicate server = null;
@@ -66,9 +76,9 @@ public class Client implements Constants {
 
 		while (!done) {
 			try {
-				System.out.println("Choose the option: \n" + "1) Join\n"
-						+ "2) Subscribe\n" + "3) Publish\n"
-						+ "4) Unsubscribe\n" + "5) Ping\n" + "6) Exit\n");
+				System.out.println("Choose the option: \n" + "1) Join\n" + "2) Leave\n"
+						+ "3) Subscribe\n" + "4) Publish\n"
+						+ "5) Unsubscribe\n" + "6) Ping\n" + "7) Exit\n");
 
 				String Choice = scan.nextLine();
 				Integer Option = Integer.valueOf(Choice);
@@ -82,6 +92,13 @@ public class Client implements Constants {
 					break;
 
 				case 2:
+					if (server.Leave(clientIp.getHostAddress(), udpPort))
+						System.out.println("Leave successfully!");
+					else
+						System.out.println("ERROR joining");
+					break;
+
+				case 3:
 
 					System.out.println("Enter Subscription:");
 					Article = scan.nextLine();
@@ -92,7 +109,7 @@ public class Client implements Constants {
 						System.out.println("ERROR subscribing");
 					break;
 
-				case 3:
+				case 4:
 
 					System.out.println("Enter Article:");
 					Article = scan.nextLine();
@@ -104,7 +121,7 @@ public class Client implements Constants {
 
 					break;
 
-				case 4:
+				case 5:
 
 					System.out.println("Enter Article:");
 					Article = scan.nextLine();
@@ -114,14 +131,14 @@ public class Client implements Constants {
 					else
 						System.out.println("ERROR unsubscribing");
 					break;
-				case 5:
+				case 6:
 					if (server.Ping()) {
 						System.out.println("Server OK!");
 					} else
 						System.out.println("Server DOWN!");
 
 					break;
-				case 6:
+				case 7:
 
 					System.exit(0);
 					break;
