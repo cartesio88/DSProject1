@@ -1,10 +1,8 @@
 package DSProject;
 
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -106,6 +104,7 @@ public class Client implements Constants {
 			}
 		}
 
+		scan.close();
 		
 	}
 	

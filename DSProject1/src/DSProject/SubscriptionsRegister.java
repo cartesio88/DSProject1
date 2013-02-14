@@ -1,14 +1,11 @@
 package DSProject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class SubscriptionsRegister {
 	/* Linked structure: Type -> Originator -> Org -> Clients */
-	HashMap register;
+	HashMap<String, HashMap<String, HashMap<String, LinkedList<HostRecord>>>> register;
 
 	public SubscriptionsRegister() {
 		initStructure();
@@ -19,7 +16,7 @@ public class SubscriptionsRegister {
 
 		/* Look for type */
 		//System.out.println("Checking type...");
-		HashMap originatorRegister = (HashMap) register.get(subscription
+		HashMap<String, HashMap<String, LinkedList<HostRecord>>> originatorRegister = register.get(subscription
 				.getType());
 
 		if (originatorRegister == null) { /* Specified type does not exist */
@@ -30,13 +27,13 @@ public class SubscriptionsRegister {
 
 		
 		/* Look for originator */
-		HashMap orgRegister = (HashMap) originatorRegister.get(subscription
+		HashMap<String, LinkedList<HostRecord>> orgRegister = originatorRegister.get(subscription
 				.getOriginator());
 		if (orgRegister == null) { /*
 									 * Originator does not exist, create the
 									 * entry
 									 */
-			orgRegister = new HashMap();
+			orgRegister = new HashMap<String, LinkedList<HostRecord>>();
 			originatorRegister.put(subscription.getOriginator(), orgRegister);
 
 			System.out.println("Originator does not exists! Creating it... : "
@@ -44,13 +41,13 @@ public class SubscriptionsRegister {
 		}
 
 		/* Look for Org */
-		LinkedList<HostRecord> clientsRegister = (LinkedList<HostRecord>) orgRegister
+		LinkedList<HostRecord> clientsRegister = orgRegister
 				.get(subscription.getOrg());
 		if (clientsRegister == null) { /*
 										 * Originator does not exist, create the
 										 * entry
 										 */
-			clientsRegister = new LinkedList();
+			clientsRegister = new LinkedList<HostRecord>();
 			orgRegister.put(subscription.getOrg(), clientsRegister);
 
 			System.out.println("Org does not exists! Creating it... : "
@@ -70,7 +67,7 @@ public class SubscriptionsRegister {
 
 	public boolean unsubscribeClient(Article subscription, HostRecord client) {
 		/* Look for type */
-		HashMap originatorRegister = (HashMap) register.get(subscription
+		HashMap<String, HashMap<String, LinkedList<HostRecord>>> originatorRegister = register.get(subscription
 				.getType());
 		if (originatorRegister == null) { /* Specified type does not exist */
 			System.out.println("ERROR Unubscribing the client: " + client
@@ -79,7 +76,7 @@ public class SubscriptionsRegister {
 		}
 
 		/* Look for originator */
-		HashMap orgRegister = (HashMap) originatorRegister.get(subscription
+		HashMap<String, LinkedList<HostRecord>> orgRegister = (HashMap<String, LinkedList<HostRecord>>) originatorRegister.get(subscription
 				.getOriginator());
 		if (orgRegister == null) {
 			System.out.println("ERROR Unsubscribing client!: " + client);
@@ -87,7 +84,6 @@ public class SubscriptionsRegister {
 		}
 
 		/* Look for Org */
-		@SuppressWarnings("unchecked")
 		LinkedList<HostRecord> clientsRegister = (LinkedList<HostRecord>) orgRegister
 				.get(subscription.getOrg());
 		if (clientsRegister == null) {
@@ -110,13 +106,13 @@ public class SubscriptionsRegister {
 		 * The article is always sent to those clients who are subscribed to
 		 * everything
 		 */
-		HashMap originatorRegister = (HashMap) register.get("all");
+		HashMap<String, HashMap<String, LinkedList<HostRecord>>> originatorRegister = register.get("all");
 		if (originatorRegister != null) {
 			clients = getClientsFromType(originatorRegister, article);
 		}
 
 		if (!article.getType().equals("all")) {
-			originatorRegister = (HashMap) register.get(article.getType());
+			originatorRegister = register.get(article.getType());
 			clients.addAll(getClientsFromType(originatorRegister, article));
 		}
 
@@ -124,7 +120,7 @@ public class SubscriptionsRegister {
 	}
 
 	private LinkedList<HostRecord> getClientsFromType(
-			HashMap originatorRegister, Article article) {
+			HashMap<String, HashMap<String, LinkedList<HostRecord>>> originatorRegister, Article article) {
 		LinkedList<HostRecord> clients = new LinkedList<HostRecord>();
 
 		if (originatorRegister == null)
@@ -134,13 +130,13 @@ public class SubscriptionsRegister {
 		 * The article is always sent to those clients who are subscribed to
 		 * everything
 		 */
-		HashMap orgRegister = (HashMap) originatorRegister.get("all");
+		HashMap<String, LinkedList<HostRecord>> orgRegister = (HashMap<String, LinkedList<HostRecord>>) originatorRegister.get("all");
 		if (orgRegister != null) {
 			clients = getClientsFromOriginator(orgRegister, article);
 		}
 
 		if (!article.getOriginator().equals("all")) {
-			orgRegister = (HashMap) originatorRegister.get(article
+			orgRegister = (HashMap<String, LinkedList<HostRecord>>) originatorRegister.get(article
 					.getOriginator());
 			clients.addAll(getClientsFromOriginator(orgRegister, article));
 		}
@@ -149,7 +145,7 @@ public class SubscriptionsRegister {
 	}
 
 	private LinkedList<HostRecord> getClientsFromOriginator(
-			HashMap orgRegister, Article article) {
+			HashMap<String, LinkedList<HostRecord>> orgRegister, Article article) {
 		LinkedList<HostRecord> clients = new LinkedList<HostRecord>();
 
 		if (orgRegister == null)
@@ -177,16 +173,16 @@ public class SubscriptionsRegister {
 	}
 
 	private void initStructure() {
-		register = new HashMap();
+		register = new HashMap<String, HashMap<String, HashMap<String, LinkedList<HostRecord>>>>();
 		/* Init types */
-		register.put("sports", new HashMap());
-		register.put("lifestyle", new HashMap());
-		register.put("entertainment", new HashMap());
-		register.put("business", new HashMap());
-		register.put("technology", new HashMap());
-		register.put("science", new HashMap());
-		register.put("politics", new HashMap());
-		register.put("health", new HashMap());
-		register.put("all", new HashMap());
+		register.put("sports", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
+		register.put("lifestyle", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
+		register.put("entertainment", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
+		register.put("business", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
+		register.put("technology", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
+		register.put("science", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
+		register.put("politics", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
+		register.put("health", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
+		register.put("all", new HashMap<String, HashMap<String, LinkedList<HostRecord>>>());
 	}
 }
