@@ -82,16 +82,14 @@ public class Client implements Constants {
 						System.out.println("ERROR joining");
 					break;
 
-				case 2:
+				case 2:{
 					if (server.Leave(clientIp.getHostAddress(), udpPort))
 						System.out.println("Leave successfully!");
 					else
 						System.out.println("ERROR joining");
 					break;
-
-				case 3:
-
-
+				}
+				case 3:{
 					System.out.println("Enter Subscription:");
 					String Article = scan.nextLine();
 					if (server.Subscribe(clientIp.getHostAddress(), udpPort,
@@ -100,9 +98,8 @@ public class Client implements Constants {
 					else
 						System.out.println("ERROR subscribing");
 					break;
-				case 4:
-
-
+				}
+				case 4:{
 					System.out.println("Enter Article:");
 					String Article = scan.nextLine();
 					if (server.Publish(Article, clientIp.getHostAddress(),
@@ -112,10 +109,11 @@ public class Client implements Constants {
 						System.out.println("ERROR publishing");
 
 					break;
-				case 5:
+				}
+				case 5:{
 
 					System.out.println("Enter Article:");
-					Article = scan.nextLine();
+					String Article = scan.nextLine();
 
 					if (server.Unsubscribe(clientIp.getHostAddress(), udpPort,
 							Article))
@@ -123,6 +121,7 @@ public class Client implements Constants {
 					else
 						System.out.println("ERROR unsubscribing");
 					break;
+				}
 				case 6:
 
 					if (server.Ping()) {
