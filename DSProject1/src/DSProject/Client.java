@@ -41,25 +41,28 @@ public class Client implements Constants {
 		if (args.length > 0) {
 			
 			serverIp = checkIp(args[0],scan);
+			System.out.println("Server IP: "+ serverIp);
 			Port = portCheck(args[1],scan);
-			udpPort = portCheck(args[2],scan);;
+			System.out.println("Port: "+ Port);
+			udpPort = portCheck(args[2],scan);
+			System.out.println("Listen port: "+ udpPort);
+			
 			
 		} else {
 			
 			//Getting an IP from USER		
 			System.out.println("Enter Server' IP you want to join: ");
 			String s = scan.nextLine();
-			serverIp = checkIp(s,scan);
+			serverIp = checkIp(s,scan);			
 			
 			//Getting a port from USER
 			System.out.println("Enter port: ");
 			s = scan.nextLine();
-			Port = portCheck(s,scan);
-			
+			Port = portCheck(s,scan);			
 		
 			System.out.println("Enter listen port: ");
 			s = scan.nextLine();
-			udpPort = portCheck(s,scan);
+			udpPort = portCheck(s,scan);			
 		
 			
 		}	
@@ -204,8 +207,7 @@ public class Client implements Constants {
 		while (!IPv4_PATTERN.matcher(IP).matches()) {
 			
 			System.out.println("IP has wrong format try again: ");
-			IP = scan.nextLine();
-			
+			IP = scan.nextLine();			
 		}
 		return IP;
 	}	
