@@ -21,10 +21,6 @@ public class Client implements Constants {
 			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 	private static Pattern IPv4_PATTERN = Pattern.compile(IPv4_REGEX);
 
-	private static boolean checkIp(final String IP) {
-		return IPv4_PATTERN.matcher(IP).matches();
-	}
-
 	public static void main(String[] args) throws InterruptedException,
 			RemoteException, NotBoundException {
 		System.out.println("Starting the Client");
@@ -41,37 +37,42 @@ public class Client implements Constants {
 		getClientIP();
 		
 		Scanner scan = new Scanner(System.in);
+
 		if (args.length > 0) {
-			serverIp = args[0];
-			Port = Integer.valueOf(args[1]);
-			udpPort = Integer.valueOf(args[2]);
+			
+			serverIp = checkIp(args[0],scan);
+			Port = portCheck(args[1],scan);
+			udpPort = portCheck(args[2],scan);;
 			
 		} else {
-//Getting an IP from USER		
+			
+			//Getting an IP from USER		
 			System.out.println("Enter Server' IP you want to join: ");
 			String s = scan.nextLine();
+			serverIp = checkIp(s,scan);
 			
-			while (!checkIp(s)) {
-				System.out.println("IP has wrong format try again: ");
-				s = scan.nextLine();
-			}
-			serverIp = s;
-//Getting a port from USER
+			//Getting a port from USER
 			System.out.println("Enter port: ");
 			s = scan.nextLine();
-			Port = portCheck(s);
-//Getting listen IP from USER
+			Port = portCheck(s,scan);
+			
+		
 			System.out.println("Enter listen port: ");
 			s = scan.nextLine();
-			udpPort = portCheck(s);
+			udpPort = portCheck(s,scan);
+		
+			
 		}	
+		
 		Registry registry = LocateRegistry.getRegistry(serverIp, Port);
 
 		Communicate server = null;
 		server = (Communicate) registry.lookup(serverName);
 
 		while (!done) {
+			
 			try {
+				
 				System.out.println("Choose the option: \n" + "1) Join\n" + "2) Leave\n"
 						+ "3) Subscribe\n" + "4) Publish\n"
 						+ "5) Unsubscribe\n" + "6) Ping\n" + "7) Exit\n");
@@ -140,14 +141,12 @@ public class Client implements Constants {
 
 					System.exit(0);
 					break;
-
+					
 				}
 			} catch (NumberFormatException e) {
 			}
+			
 		}
-
-		scan.close();
-
 	}
 
 	private static void getClientIP() {
@@ -168,16 +167,17 @@ public class Client implements Constants {
 			e.printStackTrace();
 		}
 	}
-	private static int portCheck(String s){
+	private static int portCheck(String s, Scanner scan){
 
 		int p = 0;
 		boolean badRange = true;
 		boolean notInt = true;
-		Scanner scan = new Scanner(System.in);
+		
 		
 		if (s.length() == 0) p=1099;
 			else {
 				while (badRange || notInt) {
+			
 					try{
 						Integer.valueOf(s);
 						notInt = false;
@@ -194,11 +194,22 @@ public class Client implements Constants {
 						System.out.println("Port is out of range try again: ");
 						p = Integer.valueOf(scan.nextLine());
 					}
+			
 				}
-				System.out.println("Port: "+ p);
 			}
-		scan.close();
 		return p;
 	}
+	
+	private static String checkIp(String IP, Scanner scan) {			
+		while (!IPv4_PATTERN.matcher(IP).matches()) {
+			
+			System.out.println("IP has wrong format try again: ");
+			IP = scan.nextLine();
+			
+		}
+		return IP;
+	}	
 }
+
+
 	
