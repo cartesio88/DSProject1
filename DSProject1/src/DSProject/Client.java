@@ -43,41 +43,24 @@ public class Client implements Constants {
 		
 		Scanner scan = new Scanner(System.in);
 		
-		try{
+//Getting an IP from USER		
 			System.out.println("Enter Server' IP you want to join: ");
 			String s = scan.nextLine();
-			int p;
+			
 			while (!checkIp(s)) {
 				System.out.println("IP has wrong format try again: ");
 				s = scan.nextLine();
 			}
 			serverIp = s;
-
+//Getting a port from USER
 			System.out.println("Enter port: ");
 			s = scan.nextLine();
-			
-			if (s.length() == 0) p=1099;
-				else p = Integer.valueOf(s);
-			
-			while (!(p > 0 && p < 55901)) {
-				System.out.println("Port has wrong format try again: ");
-				p = Integer.valueOf(scan.nextLine());
-			}	
-			Port = p;
-
+			Port = portCheck(s);
+//Getting listen IP from USER
 			System.out.println("Enter listen port: ");
-			p = Integer.valueOf(scan.nextLine());
-
-			if (s.length() == 0) p=3333;
-				else p = Integer.valueOf(s);
+			s = scan.nextLine();
+			udpPort = portCheck(s);
 			
-			while (!(p > 0 && p < 55901)) {
-			System.out.println("Port has wrong format try again: ");
-			p = Integer.valueOf(scan.nextLine());
-			}	
-			udpPort = p;
-		} catch (NullPointerException | NumberFormatException e) {
-			}	
 		Registry registry = LocateRegistry.getRegistry(serverIp, Port);
 
 		Communicate server = null;
@@ -179,4 +162,36 @@ public class Client implements Constants {
 			e.printStackTrace();
 		}
 	}
+	private static int portCheck(String s){
+
+		int p = 0;
+		boolean badRange = true;
+		boolean notInt = true;
+		Scanner scan = new Scanner(System.in);
+		
+		if (s.length() == 0) p=1099;
+			else {
+				while (badRange || notInt) {
+					try{
+						Integer.valueOf(s);
+						notInt = false;
+						p = Integer.valueOf(s);
+						}
+					catch(NumberFormatException e){
+						notInt = true;
+						System.out.println("Port has wrong format try again: ");
+						s = scan.nextLine();
+					}
+				
+					badRange = p < 0 || p > 55901;
+					if (badRange){
+						System.out.println("Port is out of range try again: ");
+						p = Integer.valueOf(scan.nextLine());
+					}
+				}
+				System.out.println("Port: "+ p);
+			}
+		return p;
+	}
 }
+	
