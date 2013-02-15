@@ -40,35 +40,44 @@ public class Client implements Constants {
 		boolean done = false;
 
 		getClientIP();
-
+		
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Enter Server' IP you want to join: ");
-		String s = scan.nextLine();
-		while (!checkIp(s)) {
-			System.out.println("IP has wrong format try again: ");
+		
+		try{
+			System.out.println("Enter Server' IP you want to join: ");
+			String s = scan.nextLine();
+			int p;
+			while (!checkIp(s)) {
+				System.out.println("IP has wrong format try again: ");
+				s = scan.nextLine();
+			}
+			serverIp = s;
+
+			System.out.println("Enter port: ");
 			s = scan.nextLine();
-		}
-		serverIp = s;
+			
+			if (s.length() == 0) p=1099;
+				else p = Integer.valueOf(s);
+			
+			while (!(p > 0 && p < 55901)) {
+				System.out.println("Port has wrong format try again: ");
+				p = Integer.valueOf(scan.nextLine());
+			}	
+			Port = p;
 
-		System.out.println("Enter port: ");
-		int p = Integer.valueOf(scan.nextLine());
+			System.out.println("Enter listen port: ");
+			p = Integer.valueOf(scan.nextLine());
 
-		while (!(p > 0 && p < 55901)) {
+			if (s.length() == 0) p=3333;
+				else p = Integer.valueOf(s);
+			
+			while (!(p > 0 && p < 55901)) {
 			System.out.println("Port has wrong format try again: ");
 			p = Integer.valueOf(scan.nextLine());
-		}
-		Port = p;
-
-		System.out.println("Enter listen port: ");
-		p = Integer.valueOf(scan.nextLine());
-
-		
-		while (!(p > 0 && p < 55901)) {
-			System.out.println("Port has wrong format try again: ");
-			p = Integer.valueOf(scan.nextLine());
-		}
-		udpPort = p;
-		
+			}	
+			udpPort = p;
+		} catch (NullPointerException | NumberFormatException e) {
+			}	
 		Registry registry = LocateRegistry.getRegistry(serverIp, Port);
 
 		Communicate server = null;
