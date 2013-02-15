@@ -51,20 +51,17 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			Registry registry = LocateRegistry.createRegistry(serverRMIPort);
 			registry.rebind(serverName, this);
 
-			Thread.sleep(1000); // Give it time to the register :)
+			//Thread.sleep(1000); // Give it time to the register :)
 
 			// Init server ping
 			serverUDP = new ServerUDP(serverIp, serversRegister, mutex, serverRMIPort);
 			serverUDP.start();
 
-			Thread.sleep(1000);
+			//Thread.sleep(1000);
 
 			// serverUDP.getOtherServers();
 
 		} catch (SocketException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -170,7 +167,7 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 
 		ServerGroup s = new ServerGroup(IP, "", Port);
 		if (!clientsRegister.contains(c) && !serversRegister.contains(s)) {
-			System.out.println("Not Client nor server is joined");
+			System.out.print("Not Client nor server is joined");
 			System.out.println("ERROR!");
 			return false;
 		}
@@ -178,12 +175,12 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 		Article a = new Article(Article);
 
 		if (!a.isValidArticle()) {
-			System.out.println("ERROR!");
+			System.out.println("ERROR: Invalid Article!");
 			return false;
 		}
 
 		if (articlesRegister.contains(a)) {
-			System.out.println("ERROR!");
+			System.out.println("ERROR: Duplicated Article!");
 			return false;
 		}
 
@@ -204,20 +201,26 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 		}
 
 		/* ... and to the joined servers */
+		Vector<ServerPublisher> toPublish = new Vector<ServerPublisher>();
 		Iterator<ServerGroup> itr2 = serversRegister.iterator();
 		while (itr2.hasNext()) {
 			ServerGroup entry = itr2.next();
 			if (entry.ip != IP || entry.port != Port) {
 				if (!entry.equals(s)) { // Its not me
 					if (entry.joined) {// Its not the source
-						System.out.println("Sending to the server: " + entry);
+						System.out.println("Sending to the server: " + entry+"...");
 						//entry.rmi.Publish(Article,serverIp.getCanonicalHostName(), serverRMIPort);
-						ServerPublisher thread = new ServerPublisher(entry, Article, serverIp);
-						thread.run();
+						ServerPublisher thread = new ServerPublisher(entry, Article, serverIp, serverRMIPort);
+						toPublish.add(thread);
+						System.out.println("QUEUED!");
 					}
 				}
 			}
 		}
+		System.out.println("Sending from queue! (Starting threads...)");
+		for(int i=0; i<toPublish.size(); i++)
+			toPublish.get(i).start();
+		
 		System.out.println("DONE!");
 		return true;
 	}

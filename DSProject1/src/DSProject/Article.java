@@ -193,9 +193,9 @@ public class Article {
 		return string;
 	}
 
-	public boolean equal(Object o) {
+	public boolean equals(Object o) {
 		Article a = (Article) o;
-
+		
 		return a.type.equals(this.type) && a.originator.equals(this.originator)
 				&& a.org.equals(this.org) && a.contents.equals(this.contents);
 	}
