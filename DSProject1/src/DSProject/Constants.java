@@ -9,6 +9,6 @@ public interface Constants {
 	final int MAXCLIENTS = 5;
 	final int serverUDPPort = 3334;
 	//final int serverRMIPort = 1099;
-	final int serverRMIPort = 4444;
+	//final int serverRMIPort = 4444;
 	final String serverName = "RomanCesarServer";
 }

@@ -19,12 +19,14 @@ public class ServerUDP extends Thread implements Constants {
 	private LinkedList<ServerGroup> serversRegister;
 	private Semaphore mutex;
 	private boolean firstExecution = true;
+	private int serverRMIPort;
 	
 	
-	public ServerUDP(InetAddress ip, LinkedList<ServerGroup> serversRegister, Semaphore mutex) {
+	public ServerUDP(InetAddress ip, LinkedList<ServerGroup> serversRegister, Semaphore mutex, int serverRMIPort) {
 		_ip = ip;
 		this.mutex = mutex;
 		this.serversRegister = serversRegister;
+		this.serverRMIPort = serverRMIPort;
 	}
 
 	@Override
@@ -32,7 +34,8 @@ public class ServerUDP extends Thread implements Constants {
 		try {
 			// Opening the socket
 			socket = new DatagramSocket(serverUDPPort);
-
+			
+			
 			/* Registering to the Registry Server */
 			registerRegistryServer();
 

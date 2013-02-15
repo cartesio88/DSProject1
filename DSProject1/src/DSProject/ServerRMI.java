@@ -25,11 +25,13 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 	private int connectedClients = 0;
 	ServerUDP serverUDP = null;
 	public final Semaphore mutex = new Semaphore(1, true);
+	private int serverRMIPort;
 
-	public ServerRMI(InetAddress serverIp) throws RemoteException {
+	public ServerRMI(InetAddress serverIp,int serverRMIPort) throws RemoteException {
 		super();
 
 		this.serverIp = serverIp;
+		this.serverRMIPort = serverRMIPort;
 
 		System.setProperty("java.rmi.server.hostname",
 				serverIp.getHostAddress());
@@ -52,7 +54,7 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 			Thread.sleep(1000); // Give it time to the register :)
 
 			// Init server ping
-			serverUDP = new ServerUDP(serverIp, serversRegister, mutex);
+			serverUDP = new ServerUDP(serverIp, serversRegister, mutex, serverRMIPort);
 			serverUDP.start();
 
 			Thread.sleep(1000);

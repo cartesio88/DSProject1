@@ -13,9 +13,11 @@ public class Server {
 		System.setProperty("java.rmi.server.codebase", "file:./bin");
 		System.setProperty("java.security.policy", "file:./policyfile");
 		
+		int serverRMIPort = Integer.valueOf(args[0]);
+		
 		InetAddress serverIp = getServerIP();
 		@SuppressWarnings("unused")
-		ServerRMI server = new ServerRMI(serverIp);	
+		ServerRMI server = new ServerRMI(serverIp, serverRMIPort);	
 	}
 	
 	protected static InetAddress getServerIP() {
