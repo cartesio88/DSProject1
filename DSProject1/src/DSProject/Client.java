@@ -191,6 +191,7 @@ public class Client implements Constants {
 				}
 				System.out.println("Port: "+ p);
 			}
+		scan.close();
 		return p;
 	}
 }
