@@ -39,25 +39,27 @@ public class Client implements Constants {
 		boolean done = false;
 
 		getClientIP();
-
+		
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Enter Server' IP you want to join: ");
-		String s = scan.nextLine();
-		while (!checkIp(s)) {
-			System.out.println("IP has wrong format try again: ");
+		
+//Getting an IP from USER		
+			System.out.println("Enter Server' IP you want to join: ");
+			String s = scan.nextLine();
+			
+			while (!checkIp(s)) {
+				System.out.println("IP has wrong format try again: ");
+				s = scan.nextLine();
+			}
+			serverIp = s;
+//Getting a port from USER
+			System.out.println("Enter port: ");
 			s = scan.nextLine();
-		}
-		serverIp = s;
-
-		System.out.println("Enter port: ");
-		int p = Integer.valueOf(scan.nextLine());
-
-		while (!(p > 0 && p < 55901)) {
-			System.out.println("Port has wrong format try again: ");
-			p = Integer.valueOf(scan.nextLine());
-		}
-		Port = p;
-		System.out.println(Port);
+			Port = portCheck(s);
+//Getting listen IP from USER
+			System.out.println("Enter listen port: ");
+			s = scan.nextLine();
+			udpPort = portCheck(s);
+			
 		Registry registry = LocateRegistry.getRegistry(serverIp, Port);
 
 		Communicate server = null;
@@ -65,9 +67,9 @@ public class Client implements Constants {
 
 		while (!done) {
 			try {
-				System.out.println("Choose the option: \n" + "1) Join\n"
-						+ "2) Subscribe\n" + "3) Publish\n"
-						+ "4) Unsubscribe\n" + "5) Ping\n" + "6) Exit\n");
+				System.out.println("Choose the option: \n" + "1) Join\n" + "2) Leave\n"
+						+ "3) Subscribe\n" + "4) Publish\n"
+						+ "5) Unsubscribe\n" + "6) Ping\n" + "7) Exit\n");
 
 				String Choice = scan.nextLine();
 				Integer Option = Integer.valueOf(Choice);
@@ -80,7 +82,15 @@ public class Client implements Constants {
 						System.out.println("ERROR joining");
 					break;
 
-				case 2:{
+				case 2:
+					if (server.Leave(clientIp.getHostAddress(), udpPort))
+						System.out.println("Leave successfully!");
+					else
+						System.out.println("ERROR joining");
+					break;
+
+				case 3:
+
 
 					System.out.println("Enter Subscription:");
 					String Article = scan.nextLine();
@@ -90,8 +100,8 @@ public class Client implements Constants {
 					else
 						System.out.println("ERROR subscribing");
 					break;
-				}
-				case 3:{
+				case 4:
+
 
 					System.out.println("Enter Article:");
 					String Article = scan.nextLine();
@@ -102,27 +112,27 @@ public class Client implements Constants {
 						System.out.println("ERROR publishing");
 
 					break;
-				}
-				case 4:
-				{
-					System.out.println("Enter Subscription:");
-					String Article = scan.nextLine();
+				case 5:
+
+					System.out.println("Enter Article:");
+					Article = scan.nextLine();
+
 					if (server.Unsubscribe(clientIp.getHostAddress(), udpPort,
 							Article))
 						System.out.println("Unsubscribed successfully!");
 					else
 						System.out.println("ERROR unsubscribing");
 					break;
-				}
-				case 5:{
+				case 6:
+
 					if (server.Ping()) {
 						System.out.println("Server OK!");
 					} else
 						System.out.println("Server DOWN!");
 
 					break;
-				}
-				case 6:
+				case 7:
+
 
 					System.exit(0);
 					break;
@@ -154,4 +164,37 @@ public class Client implements Constants {
 			e.printStackTrace();
 		}
 	}
+	private static int portCheck(String s){
+
+		int p = 0;
+		boolean badRange = true;
+		boolean notInt = true;
+		Scanner scan = new Scanner(System.in);
+		
+		if (s.length() == 0) p=1099;
+			else {
+				while (badRange || notInt) {
+					try{
+						Integer.valueOf(s);
+						notInt = false;
+						p = Integer.valueOf(s);
+						}
+					catch(NumberFormatException e){
+						notInt = true;
+						System.out.println("Port has wrong format try again: ");
+						s = scan.nextLine();
+					}
+				
+					badRange = p < 0 || p > 55901;
+					if (badRange){
+						System.out.println("Port is out of range try again: ");
+						p = Integer.valueOf(scan.nextLine());
+					}
+				}
+				System.out.println("Port: "+ p);
+			}
+		scan.close();
+		return p;
+	}
 }
+	
