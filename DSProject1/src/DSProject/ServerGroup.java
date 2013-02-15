@@ -16,19 +16,36 @@ public class ServerGroup {
 		joined = false;
 		this.ip = ip;
 		this.bindingName = bindingName;
-		this.port = port;		
-		
+		this.port = port;
+		this.rmi = null;		
+	}
+
+	public boolean bind(){
 		Registry registry;
 		try {
 			registry = LocateRegistry.getRegistry(ip, port);
 			rmi = (Communicate) registry.lookup(bindingName);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
+			rmi = null;
 			e.printStackTrace();
+			return false;
 		} catch (NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Server not available "+toString());
+			rmi = null;
+			return false;
 		}
+		return true;
+	}
+	public boolean equals(Object o) {
+		ServerGroup s = (ServerGroup) o;
+
+		return s.ip.equals(ip) && s.port == port;
+	}
+
+	public String toString() {
+		String s = "";
+		s += bindingName + "@" + ip + ":" + port;
+		return s;
 	}
 
 }

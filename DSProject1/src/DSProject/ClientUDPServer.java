@@ -23,6 +23,9 @@ public class ClientUDPServer extends Thread implements Constants {
         
         while(true)
             {                
+        		inData = new byte[1024];
+        		inPacket.setData(inData);
+        		inPacket.setLength(1024);
                 serverSocket.receive(inPacket);
                 String inMsg = new String(inPacket.getData());
                 System.out.println("Article received: " + inMsg);

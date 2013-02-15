@@ -33,17 +33,17 @@ public class Article {
 		/* if some fields are empty, write "all" on them */
 		normalizeArticle();
 	}
-	
+
 	public Article(String type, String originator, String org, String contents) {
 		this.type = type;
 		this.originator = originator;
 		this.org = org;
 		this.contents = contents;
-		
+
 		raw = encode();
 
 		legalArticle = true;
-		
+
 		/* Is the type valid? */
 		if (legalArticle)
 			checkType();
@@ -53,7 +53,7 @@ public class Article {
 		 */
 		if (legalArticle)
 			classifyArticle();
-		
+
 	}
 
 	private void getFields(String rawArticle) {
@@ -127,12 +127,9 @@ public class Article {
 
 	private void checkType() {
 		if (!type.equals("") && !type.equalsIgnoreCase("sports")
-				&& !type.equals("lifestyle")
-				&& !type.equals("entertainment")
-				&& !type.equals("business")
-				&& !type.equals("technology")
-				&& !type.equals("science")
-				&& !type.equals("politics")
+				&& !type.equals("lifestyle") && !type.equals("entertainment")
+				&& !type.equals("business") && !type.equals("technology")
+				&& !type.equals("science") && !type.equals("politics")
 				&& !type.equals("health")) {
 			System.out.println("ERROR: Illegal type: " + type);
 			legalArticle = false;
@@ -167,8 +164,8 @@ public class Article {
 	public String encode() {
 		String string = "";
 
-		string += type+";"+originator+";"+org+";"+contents;
-		
+		string += type + ";" + originator + ";" + org + ";" + contents;
+
 		return string;
 	}
 
@@ -194,5 +191,12 @@ public class Article {
 		string += raw + "\n";
 
 		return string;
+	}
+
+	public boolean equal(Object o) {
+		Article a = (Article) o;
+
+		return a.type.equals(this.type) && a.originator.equals(this.originator)
+				&& a.org.equals(this.org) && a.contents.equals(this.contents);
 	}
 }

@@ -14,6 +14,7 @@ public class Server {
 		System.setProperty("java.security.policy", "file:./policyfile");
 		
 		InetAddress serverIp = getServerIP();
+		@SuppressWarnings("unused")
 		ServerRMI server = new ServerRMI(serverIp);	
 	}
 	
@@ -32,8 +33,6 @@ public class Server {
 			}
 			System.setProperty("java.rmi.server.hostname",serverIp.getHostAddress());
 			
-			System.out.println("El valor de la ip es:"
-					+ System.getProperty("java.rmi.server.hostname"));
 
 		} catch (SocketException e) {
 			System.out.println("ERROR getting the interfaces of the device");
