@@ -51,11 +51,11 @@ public class Client implements Constants {
 				s = scan.nextLine();
 			}
 			serverIp = s;
-//Getting a port from USER
+			//Getting a port from USER
 			System.out.println("Enter port: ");
 			s = scan.nextLine();
 			Port = portCheck(s);
-//Getting listen IP from USER
+			//Getting listen IP from USER
 			System.out.println("Enter listen port: ");
 			s = scan.nextLine();
 			udpPort = portCheck(s);

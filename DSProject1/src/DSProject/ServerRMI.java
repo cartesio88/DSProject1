@@ -209,8 +209,9 @@ public class ServerRMI extends UnicastRemoteObject implements Communicate,
 				if (!entry.equals(s)) { // Its not me
 					if (entry.joined) {// Its not the source
 						System.out.println("Sending to the server: " + entry);
-						entry.rmi.Publish(Article,
-								serverIp.getCanonicalHostName(), serverRMIPort);
+						//entry.rmi.Publish(Article,serverIp.getCanonicalHostName(), serverRMIPort);
+						ServerPublisher thread = new ServerPublisher(entry, Article, serverIp);
+						thread.run();
 					}
 				}
 			}

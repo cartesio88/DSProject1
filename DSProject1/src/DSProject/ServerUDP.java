@@ -8,7 +8,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
