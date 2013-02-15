@@ -41,7 +41,12 @@ public class Client implements Constants {
 		getClientIP();
 		
 		Scanner scan = new Scanner(System.in);
-		
+		if (args.length > 0) {
+			serverIp = args[0];
+			Port = Integer.valueOf(args[1]);
+			udpPort = Integer.valueOf(args[2]);
+			
+		} else {
 //Getting an IP from USER		
 			System.out.println("Enter Server' IP you want to join: ");
 			String s = scan.nextLine();
@@ -51,15 +56,15 @@ public class Client implements Constants {
 				s = scan.nextLine();
 			}
 			serverIp = s;
-			//Getting a port from USER
+//Getting a port from USER
 			System.out.println("Enter port: ");
 			s = scan.nextLine();
 			Port = portCheck(s);
-			//Getting listen IP from USER
+//Getting listen IP from USER
 			System.out.println("Enter listen port: ");
 			s = scan.nextLine();
 			udpPort = portCheck(s);
-			
+		}	
 		Registry registry = LocateRegistry.getRegistry(serverIp, Port);
 
 		Communicate server = null;
